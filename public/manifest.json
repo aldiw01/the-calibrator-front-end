@@ -1,0 +1,15 @@
+{
+  "short_name": "The Calibrator",
+  "name": "the-calibrator - Centralize database and process in Calibration Laboratory",
+  "icons": [
+    {
+      "src": "./assets/img/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
+}
