@@ -21,7 +21,6 @@ class Transmission extends Component {
       edit: false,
       delete: false,
       loader: false,
-      documentation: '',
       certificate: [{
         id: '',
         device_id: '',
@@ -128,12 +127,6 @@ class Transmission extends Component {
     })
   }
 
-  handleChangeEditFile = (event) => {
-    this.setState({
-      documentation: event.target.files[0]
-    })
-  }
-
   handleAdd = (event) => {
     event.preventDefault();
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
@@ -193,20 +186,7 @@ class Transmission extends Component {
     event.preventDefault();
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      const data = new FormData();
-      data.append('name', this.state.new.name);
-      data.append('manufacturer', this.state.new.manufacturer);
-      data.append('model', this.state.new.model);
-      data.append('serial_number', this.state.new.serial_number);
-      data.append('defect_status', this.state.new.defect_status);
-      data.append('calibration_date', this.state.new.calibration_date);
-      data.append('due_date', this.state.new.due_date);
-      data.append('calibration_period', this.state.new.calibration_period);
-      data.append('supervisor', this.state.new.supervisor);
-      data.append('issue_date', this.state.new.issue_date);
-      data.append('test_interval', this.state.new.test_interval);
-      data.append('calibration_method', this.state.new.calibration_method);
-      axios.put(localStorage.getItem('serverAPI') + '/devices/' + this.state.data[this.state.id].id.replace("/", "%2F"), data)
+      axios.put(localStorage.getItem('serverAPI') + '/devices/' + this.state.data[this.state.id].id.replace("/", "%2F"), this.state.focus)
         .then(res => {
           this.setState({
             edit: !this.state.edit,
@@ -572,7 +552,7 @@ class Transmission extends Component {
                         <Col xs="3">Tanggal Pembelian</Col>
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.focus.issue_date).toLocaleDateString()}</Col>
                         <div className="w-100 py-2"></div>
-                        <Col xs="3">Interval Test</Col>
+                        <Col xs="3">Pengecekan Antara</Col>
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.test_interval}</Col>
                         <div className="w-100 py-2"></div>
                         <Col xs="3">Metode Pengujian</Col>
@@ -593,7 +573,7 @@ class Transmission extends Component {
                         </Col>
                         <div className="w-100 py-2"></div>
                         <Col xs="12">
-                          <Certificate certificate={this.state.certificate} />
+                          <Certificate id={this.state.data[this.state.id].id} />
                         </Col>
                       </Row>
                     </Col>
@@ -689,13 +669,18 @@ class Transmission extends Component {
                       </FormGroup>
                       <FormGroup row>
                         <Col md="3">
-                          Dokumentasi
+                          Pengecekan Antara
                         </Col>
                         <Col xs="12" md="9">
-                          <div className="custom-file">
-                            <Input type="file" className="custom-file-input" name="documentation" onChange={this.handleChangeEditFile} />
-                            <Label className="custom-file-label" htmlFor="customFileLang" style={{ overflow: "hidden" }} >{this.state.documentation ? this.state.documentation.name : ""} </Label>
-                          </div>
+                          <Input type="text" onChange={this.handleChange} name="test_interval" value={this.state.focus.test_interval} required />
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Col md="3">
+                          Metode Kalibrasi
+                        </Col>
+                        <Col xs="12" md="9">
+                          <Input type="text" onChange={this.handleChange} name="calibration_method" value={this.state.focus.calibration_method} required />
                         </Col>
                       </FormGroup>
                     </ModalBody>

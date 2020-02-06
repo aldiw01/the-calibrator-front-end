@@ -131,20 +131,7 @@ class Table extends Component {
     event.preventDefault();
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      const data = new FormData();
-      data.append('name', this.state.new.name);
-      data.append('manufacturer', this.state.new.manufacturer);
-      data.append('model', this.state.new.model);
-      data.append('serial_number', this.state.new.serial_number);
-      data.append('defect_status', this.state.new.defect_status);
-      data.append('calibration_date', this.state.new.calibration_date);
-      data.append('due_date', this.state.new.due_date);
-      data.append('calibration_period', this.state.new.calibration_period);
-      data.append('supervisor', this.state.new.supervisor);
-      data.append('issue_date', this.state.new.issue_date);
-      data.append('test_interval', this.state.new.test_interval);
-      data.append('calibration_method', this.state.new.calibration_method);
-      axios.put(localStorage.getItem('serverAPI') + '/devices/' + this.state.data[this.state.id].id.replace("/", "%2F"), data)
+      axios.put(localStorage.getItem('serverAPI') + '/devices/' + this.state.data[this.state.id].id.replace("/", "%2F"), this.state.focus)
         .then(res => {
           this.setState({
             edit: !this.state.edit,
@@ -463,6 +450,22 @@ class Table extends Component {
                         </Col>
                         <Col xs="12" md="9">
                           <Input type="date" onChange={this.handleChange} name="issue_date" value={this.state.focus.issue_date} required />
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Col md="3">
+                          Pengecekan Antara
+                        </Col>
+                        <Col xs="12" md="9">
+                          <Input type="text" onChange={this.handleChange} name="test_interval" value={this.state.focus.test_interval} required />
+                        </Col>
+                      </FormGroup>
+                      <FormGroup row>
+                        <Col md="3">
+                          Metode Kalibrasi
+                        </Col>
+                        <Col xs="12" md="9">
+                          <Input type="text" onChange={this.handleChange} name="calibration_method" value={this.state.focus.calibration_method} required />
                         </Col>
                       </FormGroup>
                       <FormGroup row>
