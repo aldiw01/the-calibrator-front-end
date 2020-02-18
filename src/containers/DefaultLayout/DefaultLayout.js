@@ -17,6 +17,7 @@ import {
 } from '@coreui/react';
 // sidebar nav config
 import navigation from '../../_nav';
+import navigationAdmin from '../../_navAdmin';
 // routes config
 import routes from '../../routes';
 
@@ -54,7 +55,7 @@ class DefaultLayout extends Component {
             <AppSidebarHeader />
             <AppSidebarForm />
             <Suspense>
-              <AppSidebarNav navConfig={navigation} {...this.props} />
+              {this.Auth.getProfile().role === "2" ? <AppSidebarNav navConfig={navigationAdmin} {...this.props} /> : <AppSidebarNav navConfig={navigation} {...this.props} />}
             </Suspense>
             <AppSidebarFooter />
             <AppSidebarMinimizer />

@@ -56,6 +56,11 @@ export default {
       url: '/requests',
       icon: 'icon-envelope-letter'
     },
+    {
+      name: 'Registrasi',
+      url: '/register',
+      icon: 'icon-user-follow'
+    },
     // {
     //   name: 'Sertifikat',
     //   url: '/certificates',

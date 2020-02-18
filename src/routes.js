@@ -15,6 +15,7 @@ const D_Table = React.lazy(() => import('./views/Admin/Devices/Table'));
 const Certificates = React.lazy(() => import('./views/Admin/Certificates'));
 
 const Profile = React.lazy(() => import('./views/Profile/Profile'));
+const Register = React.lazy(() => import('./views/Pages/Register'));
 const Page404 = React.lazy(() => import('./views/Pages/Page404'));
 
 const routes = [
@@ -35,6 +36,7 @@ const routes = [
 
   { path: '/certificates', name: 'Certificates', component: Certificates },
   { path: '/profile', name: 'Profile', component: Profile },
+  { path: '/register', name: 'Register', component: Register },
   { path: '/:id', exact: true, name: 'Page 404', component: Page404 }
 ];
 

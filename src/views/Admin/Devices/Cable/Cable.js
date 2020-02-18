@@ -91,7 +91,7 @@ class Cable extends Component {
   }
 
   getData = () => {
-    axios.get(localStorage.getItem('serverAPI') + '/devices/owner/CAB')
+    axios.get(process.env.REACT_APP_API_PATH + '/devices/owner/CAB')
       .then(res => {
         this.setState({ data: res.data });
       })
@@ -148,7 +148,7 @@ class Cable extends Component {
       data.append('manual_file', this.state.new.manual_file);
       data.append('spec_file', this.state.new.spec_file);
       data.append('documentation', this.state.documentation);
-      axios.post(localStorage.getItem('serverAPI') + '/devices', data)
+      axios.post(process.env.REACT_APP_API_PATH + '/devices', data)
         .then(res => {
           this.setState({
             add: !this.state.add,
@@ -186,7 +186,7 @@ class Cable extends Component {
     event.preventDefault();
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      axios.put(localStorage.getItem('serverAPI') + '/devices/' + this.state.data[this.state.id].id.replace("/", "%2F"), this.state.focus)
+      axios.put(process.env.REACT_APP_API_PATH + '/devices/' + this.state.data[this.state.id].id.replace("/", "%2F"), this.state.focus)
         .then(res => {
           this.setState({
             edit: !this.state.edit,
@@ -206,7 +206,7 @@ class Cable extends Component {
   handleDelete = (id) => {
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      axios.delete(localStorage.getItem('serverAPI') + '/devices/ever/' + id.replace("/", "%2F"))
+      axios.delete(process.env.REACT_APP_API_PATH + '/devices/ever/' + id.replace("/", "%2F"))
         .then(res => {
           this.setState({
             delete: !this.state.delete,
@@ -230,7 +230,7 @@ class Cable extends Component {
 
   toggleView = (id) => {
     if (id !== this.state.id) {
-      axios.get(localStorage.getItem('serverAPI') + '/cal_certificates/devices/' + this.state.data[id].id.replace("/", "%2F"))
+      axios.get(process.env.REACT_APP_API_PATH + '/cal_certificates/devices/' + this.state.data[id].id.replace("/", "%2F"))
         .then(res => {
           this.setState({ certificate: res.data });
         })
@@ -272,12 +272,18 @@ class Cable extends Component {
   }
 
   render() {
+    const role = this.Auth.getProfile().role
     var viewStyle = {
       overflowWrap: 'break-word'
     }
 
     const data = {
       columns: [
+        {
+          label: 'No',
+          field: 'no',
+          sort: 'asc'
+        },
         {
           label: 'No Asset',
           field: 'id',
@@ -324,16 +330,20 @@ class Cable extends Component {
     data.rows.forEach(function (items, i) {
       if (items.id !== '') {
         rows.push({
+          no: i + 1,
           id: items.id,
           name: items.name,
           manufacturer: items.manufacturer,
           model: items.model,
           due_date: items.due_date,
-          defect_status: items.defect_status === "1" ? "Rusak" : "Aktif",
+          defect_status: items.defect_status === "1" ? "Rusak" : "Bagus",
           actions: <React.Fragment>
             <button title="View Data" className="px-3 py-1 mr-1 btn btn-primary" onClick={() => toggleView(i)}><i className="fa fa-search"></i></button>
-            <button title="Edit Data" className="px-3 py-1 mr-1 btn btn-warning" onClick={() => toggleEdit(i)}><i className="fa fa-pencil"></i></button>
-            <button title="Delete Data" className="px-3 py-1 mr-1 btn btn-danger" onClick={() => toggleDelete(i)}><i className="fa fa-minus-circle"></i></button>
+            {role === "2" ?
+              <React.Fragment>
+                <button title="Edit Data" className="px-3 py-1 mr-1 btn btn-warning" onClick={() => toggleEdit(i)}><i className="fa fa-pencil"></i></button>
+                <button title="Delete Data" className="px-3 py-1 mr-1 btn btn-danger" onClick={() => toggleDelete(i)}><i className="fa fa-minus-circle"></i></button>
+              </React.Fragment> : ""}
           </React.Fragment>
         });
       }
@@ -361,6 +371,7 @@ class Cable extends Component {
                   bordered
                   small
                   data={dataFix}
+                  entriesOptions={[10, 50, 100, 1000]}
                 // paginationLabel={["<", ">"]}
                 />
 
@@ -434,7 +445,7 @@ class Cable extends Component {
                       </FormGroup>
                       <FormGroup row>
                         <Col md="3">
-                          Periode Kalibrasi
+                          Periode Kalibrasi (Tahun)
                         </Col>
                         <Col xs="12" md="9">
                           <Input type="number" onChange={this.handleChangeNew} name="calibration_period" value={this.state.new.calibration_period} required />
@@ -442,7 +453,7 @@ class Cable extends Component {
                       </FormGroup>
                       <FormGroup row>
                         <Col md="3">
-                          Supervisor
+                          Penanggung Jawab
                         </Col>
                         <Col xs="12" md="9">
                           <Input type="text" onChange={this.handleChangeNew} name="supervisor" value={this.state.new.supervisor} required />
@@ -466,7 +477,7 @@ class Cable extends Component {
                       </FormGroup>
                       <FormGroup row>
                         <Col md="3">
-                          Metode Pengujian
+                          Metode Kalibrasi
                         </Col>
                         <Col xs="12" md="9">
                           <Input type="number" onChange={this.handleChangeNew} name="calibration_method" value={this.state.new.calibration_method} required />
@@ -535,7 +546,7 @@ class Cable extends Component {
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.serial_number}</Col>
                         <div className="w-100 py-2"></div>
                         <Col xs="3">Status</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.defect_status === "1" ? "Rusak" : "Aktif"}</Col>
+                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.defect_status === "1" ? "Rusak" : "Bagus"}</Col>
                         <div className="w-100 py-2"></div>
                         <Col xs="3">Tanggal Kalibrasi</Col>
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.focus.calibration_date).toLocaleDateString()}</Col>
@@ -544,9 +555,9 @@ class Cable extends Component {
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.focus.due_date).toLocaleDateString()}</Col>
                         <div className="w-100 py-2"></div>
                         <Col xs="3">Periode Kalibrasi</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.calibration_period}</Col>
+                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.calibration_period} Tahun</Col>
                         <div className="w-100 py-2"></div>
-                        <Col xs="3">Supervisor</Col>
+                        <Col xs="3">Penanggung Jawab</Col>
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.supervisor}</Col>
                         <div className="w-100 py-2"></div>
                         <Col xs="3">Tanggal Pembelian</Col>
@@ -555,7 +566,7 @@ class Cable extends Component {
                         <Col xs="3">Pengecekan Antara</Col>
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.test_interval}</Col>
                         <div className="w-100 py-2"></div>
-                        <Col xs="3">Metode Pengujian</Col>
+                        <Col xs="3">Metode Kalibrasi</Col>
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.calibration_method}</Col>
                         <div className="w-100 py-2"></div>
                         <Col xs="3">File Manual</Col>
@@ -645,7 +656,7 @@ class Cable extends Component {
                       </FormGroup>
                       <FormGroup row>
                         <Col md="3">
-                          Periode Kalibrasi
+                          Periode Kalibrasi (Tahun)
                         </Col>
                         <Col xs="12" md="9">
                           <Input type="text" onChange={this.handleChange} name="calibration_period" value={this.state.focus.calibration_period} required />
@@ -653,7 +664,7 @@ class Cable extends Component {
                       </FormGroup>
                       <FormGroup row>
                         <Col md="3">
-                          Supervisor
+                          Penanggung Jawab
                         </Col>
                         <Col xs="12" md="9">
                           <Input type="text" onChange={this.handleChange} name="supervisor" value={this.state.focus.supervisor} required />

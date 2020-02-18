@@ -53,7 +53,7 @@ class Certificates extends Component {
   }
 
   getData = () => {
-    axios.get(localStorage.getItem('serverAPI') + '/cal_certificates')
+    axios.get(process.env.REACT_APP_API_PATH + '/cal_certificates')
       .then(res => {
         this.setState({ data: res.data });
       })
@@ -108,7 +108,7 @@ class Certificates extends Component {
       data.append('due_date', this.state.new.due_date);
       data.append('test_engineer_id', this.state.new.test_engineer_id);
       data.append('certificate_file', this.state.new.certificate_file);
-      axios.post(localStorage.getItem('serverAPI') + '/cal_certificates', data)
+      axios.post(process.env.REACT_APP_API_PATH + '/cal_certificates', data)
         .then(res => {
           this.setState({
             add: !this.state.add,
@@ -142,7 +142,7 @@ class Certificates extends Component {
       data.append('due_date', this.state.new.due_date);
       data.append('test_engineer_id', this.state.new.test_engineer_id);
       data.append('certificate_file', this.state.new.certificate_file);
-      axios.put(localStorage.getItem('serverAPI') + '/cal_certificates/' + this.state.data[this.state.id].id, data)
+      axios.put(process.env.REACT_APP_API_PATH + '/cal_certificates/' + this.state.data[this.state.id].id, data)
         .then(res => {
           this.setState({
             edit: !this.state.edit,
@@ -162,7 +162,7 @@ class Certificates extends Component {
   handleDelete = (id) => {
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      axios.delete(localStorage.getItem('serverAPI') + '/cal_certificates/ever/' + id)
+      axios.delete(process.env.REACT_APP_API_PATH + '/cal_certificates/ever/' + id)
         .then(res => {
           this.setState({
             delete: !this.state.delete,

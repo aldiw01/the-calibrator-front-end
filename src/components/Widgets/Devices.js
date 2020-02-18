@@ -5,7 +5,6 @@ import { mapToCssModules } from 'reactstrap/lib/utils';
 import { Link } from 'react-router-dom';
 
 const propTypes = {
-  assets: PropTypes.any,
   children: PropTypes.node,
   className: PropTypes.string,
   cssModule: PropTypes.object,
@@ -15,7 +14,6 @@ const propTypes = {
 };
 
 const defaultProps = {
-  assets: [{ id: "100/CAL" }, { id: "101/CAL" }, { id: "103/CAL" }],
   dataBox: () => ({ variant: 'facebook', friends: '-', feeds: '-' }),
   refMain: "/devices"
 };
@@ -24,7 +22,7 @@ class Devices extends Component {
   render() {
 
     // eslint-disable-next-line
-    const { assets, children, className, cssModule, dataBox, lab, refMain, ...attributes } = this.props;
+    const { children, className, cssModule, dataBox, lab, refMain, ...attributes } = this.props;
 
     // demo purposes only
     const data = dataBox();
@@ -34,11 +32,6 @@ class Devices extends Component {
     const icon = variant;
     const keys = Object.keys(data);
     const vals = Object.values(data);
-
-    const boxStyle = {
-      height: '98px',
-      overflowY: 'hidden'
-    }
 
     const classCard = 'brand-card';
     const classCardHeader = classNames(`${classCard}-header`, back);
@@ -85,16 +78,6 @@ class Devices extends Component {
             </div>
           </div>
         </Link>
-        <div className={classCardBody + " p-0"}>
-          <div className="p-0">
-            <div className="box-body p-2" style={boxStyle}>
-              {assets.length > 0 ?
-                assets.map((item, i) =>
-                  <h5 key={i} style={{ borderBottom: "solid .1px darkgray" }}>{item.id}<br /></h5>
-                ) : ''}
-            </div>
-          </div>
-        </div>
       </div>
     );
   }

@@ -71,7 +71,7 @@ class Device extends Component {
   }
 
   getData = () => {
-    axios.get(localStorage.getItem('serverAPI') + '/devices/owner/DEV')
+    axios.get(process.env.REACT_APP_API_PATH + '/devices/owner/DEV')
       .then(res => {
         this.setState({ data: res.data });
       })
@@ -130,7 +130,7 @@ class Device extends Component {
       data.append('calibration_period', this.state.new.calibration_period);
       data.append('defect_status', this.state.new.defect_status);
       data.append('documentation', this.state.documentation);
-      axios.post(localStorage.getItem('serverAPI') + '/devices', data)
+      axios.post(process.env.REACT_APP_API_PATH + '/devices', data)
         .then(res => {
           this.setState({
             add: !this.state.add,
@@ -176,7 +176,7 @@ class Device extends Component {
       data.append('calibration_period', this.state.new.calibration_period);
       data.append('defect_status', this.state.new.defect_status);
       data.append('documentation', this.state.documentation);
-      axios.put(localStorage.getItem('serverAPI') + '/devices/' + this.state.data[this.state.id].id, data)
+      axios.put(process.env.REACT_APP_API_PATH + '/devices/' + this.state.data[this.state.id].id, data)
         .then(res => {
           this.setState({
             edit: !this.state.edit,
@@ -196,7 +196,7 @@ class Device extends Component {
   handleDelete = (id) => {
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      axios.delete(localStorage.getItem('serverAPI') + '/devices/' + id)
+      axios.delete(process.env.REACT_APP_API_PATH + '/devices/' + id)
         .then(res => {
           this.setState({
             delete: !this.state.delete,

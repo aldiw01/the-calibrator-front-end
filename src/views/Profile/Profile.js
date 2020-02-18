@@ -11,17 +11,13 @@ class Profile extends Component {
     }
     this.state = {
       data: [{
-        id: '',
-        name: '',
-        email: '',
-        phone: '',
-        citizen_id: '',
-        captured_id: '',
-        gender: '',
-        address: '',
-        status: '',
-        created: '',
-        updated: ''
+        NIK: '',
+        Name: '',
+        Email: '',
+        Lab: '',
+        Role: '',
+        Registered: '',
+        Updated: ''
       }]
     }
   }
@@ -29,19 +25,16 @@ class Profile extends Component {
   componentDidMount() {
     console.log(this.Auth.getProfile())
     const profile = this.Auth.getProfile();
-    const statusID = ["Unverified", "Pending", "Verified", "Super Admin", "", "", "", "", "", "Inactive"];
-    var status = statusID[profile.status];
+    const roleID = ["", "Staff", "Super Admin", "", "", "", "", "", "", "Inactive"];
+    var role = roleID[profile.role];
     this.setState({
       data: [{
-        ID: profile.id,
+        NIK: profile.id,
         Name: profile.name,
         Email: profile.email,
-        Phone: profile.phone,
-        Citizen_ID: profile.citizen_id,
-        Gender: profile.gender,
-        Address: profile.address,
-        Status: status,
-        Registered: new Date(profile.created).toLocaleString('en-GB'),
+        Lab: profile.lab,
+        Role: role,
+        Registered: new Date(profile.registered).toLocaleString('en-GB'),
         Updated: new Date(profile.updated).toLocaleString('en-GB')
       }]
     })
@@ -57,7 +50,7 @@ class Profile extends Component {
           <Col lg={6}>
             <Card>
               <CardHeader>
-                <strong><i className="icon-info pr-1"></i>User id: {this.state.data[0].ID}</strong>
+                <strong><i className="icon-info pr-1"></i>User id: {this.state.data[0].NIK}</strong>
               </CardHeader>
               <CardBody>
                 <Table responsive striped hover>

@@ -12,7 +12,7 @@ class Login extends Component {
     super();
     this.Auth = new AuthService();
     this.state = {
-      email: '',
+      nik: '',
       password: '',
       isAlertVisible: false,
       isLoggedin: false,
@@ -34,7 +34,7 @@ class Login extends Component {
       const req = {
         token: this.props.match.params.id
       };
-      axios.post(localStorage.getItem('serverAPI') + '/user/verify-token', req, {
+      axios.post(process.env.REACT_APP_API_PATH + '/user/verify-token', req, {
       }).then(res => {
         this.setState({
           isAlertVisible: res.data.success,
@@ -62,7 +62,7 @@ class Login extends Component {
   handleFormSubmit = (event) => {
     this.setState({ loader: true });
     event.preventDefault();
-    this.Auth.login(this.state.email, this.state.password)
+    this.Auth.login(this.state.nik, this.state.password)
       .then(res => {
         if (res.data.success) {
           this.setState({ loader: false });
@@ -82,7 +82,7 @@ class Login extends Component {
     this.setState({ loader2: true });
     event.preventDefault();
     const req = { email: this.state.emailRecovery };
-    axios.post(localStorage.getItem('serverAPI') + '/forgot-password', req)
+    axios.post(process.env.REACT_APP_API_PATH + '/forgot-password', req)
       .then(res => {
         this.setState({
           forgotPassword: !this.state.forgotPassword,
@@ -122,7 +122,7 @@ class Login extends Component {
                               <InputGroupAddon addonType="prepend">
                                 <InputGroupText>@</InputGroupText>
                               </InputGroupAddon>
-                              <Input type="email" placeholder="E-mail" autoComplete="email" name="email" onChange={this.handleChange} required />
+                              <Input type="text" placeholder="NIK" autoComplete="username" name="nik" onChange={this.handleChange} required />
                             </InputGroup>
                             <InputGroup className="mb-4">
                               <InputGroupAddon addonType="prepend">
