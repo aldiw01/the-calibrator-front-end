@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Col, Row, Button, Modal, ModalBody, ModalFooter, ModalHeader, Label, Form, FormGroup, Input } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Row, Button } from 'reactstrap';
 import { MDBDataTable } from 'mdbreact';
 import axios from 'axios';
 import AuthService from 'server/AuthService';
-import Spinner from 'react-spinkit';
-import Certificate from 'components/Certificate/Certificate';
+import { CSVLink } from "react-csv";
+import ViewDevice from 'components/Modals/ViewDevice';
+import EditDevice from 'components/Modals/EditDevice';
+import DeleteDevice from 'components/Modals/DeleteDevice';
 
 class Table extends Component {
 
@@ -19,9 +21,14 @@ class Table extends Component {
       add: false,
       view: false,
       edit: false,
+      edit_documentation: false,
       delete: false,
       loader: false,
       documentation: '',
+      csv_data: [],
+      csv_headers: [],
+      dropdown1: false,
+      dropdown2: false,
       certificate: [{
         id: '',
         device_id: '',
@@ -79,6 +86,7 @@ class Table extends Component {
       axios.get(process.env.REACT_APP_API_PATH + '/devices/defect_status/' + this.props.match.params.lab + '/' + status)
         .then(res => {
           this.setState({ data: res.data });
+          this.getCSVData();
         })
         .catch(error => {
           console.log(error);
@@ -87,11 +95,69 @@ class Table extends Component {
       axios.get(process.env.REACT_APP_API_PATH + '/devices/calibration_status/' + this.props.match.params.lab)
         .then(res => {
           this.setState({ data: res.data });
+          this.getCSVData();
         })
         .catch(error => {
           console.log(error);
         });
     }
+  }
+
+  getCSVData = () => {
+    var csv_headers = [
+      { label: "NO", key: "no" },
+      { label: "NO. ASSET", key: "id" },
+      { label: "NAMA ALAT UKUR", key: "name" },
+      { label: "MERK", key: "manufacturer" },
+      { label: "TIPE", key: "model" },
+      { label: "NO. SERI", key: "serial_number" },
+      { label: "KONDISI", key: "defect_status" },
+      { label: "BUKU MANUAL", key: "manual" },
+      { label: "TANGGAL KALIBRASI", key: "calibration_date" },
+      { label: "AKHIR KALIBRASI", key: "due_date" },
+      { label: "PER KALIBRASI", key: "calibration_period" },
+      { label: "PENANGGUNG JAWAB", key: "supervisor" },
+      { label: "METODE KALIBRASI", key: "calibration_method" },
+      { label: "TANGGAL PEMBELIAN", key: "issue_date" }
+    ];
+
+    var csv_data = [];
+    this.state.data.forEach(function (items, i) {
+      if (items.id !== '') {
+        csv_data.push({
+          no: i + 1,
+          id: items.id,
+          name: items.name,
+          manufacturer: items.manufacturer,
+          model: items.model,
+          serial_number: items.serial_number,
+          defect_status: items.defect_status === "1" ? "Rusak" : "Bagus",
+          manual: items.manual_file ? "Ada" : "Tidak Ada",
+          calibration_date: items.calibration_date,
+          due_date: items.due_date,
+          calibration_period: items.calibration_period,
+          supervisor: items.supervisor,
+          calibration_method: items.calibration_method,
+          issue_date: items.issue_date
+        });
+      }
+    });
+    this.setState({
+      csv_headers: csv_headers,
+      csv_data: csv_data
+    })
+  }
+
+  toggle1 = () => {
+    this.setState({
+      dropdown1: !this.state.dropdown1
+    });
+  }
+
+  toggle2 = () => {
+    this.setState({
+      dropdown2: !this.state.dropdown2
+    });
   }
 
   handleChange = (event) => {
@@ -210,11 +276,45 @@ class Table extends Component {
     });
   }
 
+  handleChangeFile = (event) => {
+    this.setState({
+      [event.target.name]: event.target.files[0]
+    })
+  }
+
+  toggleEditDocumentation = () => {
+    this.setState({
+      edit_documentation: !this.state.edit_documentation,
+      documentation: ''
+    });
+  }
+
+  handleEditDocumentation = (event) => {
+    event.preventDefault();
+    if (window.confirm("You will change documentation picture. Are you sure?")) {
+      this.setState({ loader: true });
+      const data = new FormData();
+      data.append('test', this.state.edit_documentation);
+      data.append('documentation', this.state.documentation);
+      axios.put(process.env.REACT_APP_API_PATH + '/devices/documentation/' + this.state.focus.id.replace("/", "%2F"), data)
+        .then(res => {
+          this.setState({
+            edit_documentation: !this.state.edit_documentation,
+            loader: false,
+            documentation: ''
+          })
+          alert(res.data.message);
+          this.getData();
+        })
+        .catch(error => {
+          alert(error);
+          console.log(error);
+        });
+    }
+  }
+
   render() {
     const role = this.Auth.getProfile().role
-    var viewStyle = {
-      overflowWrap: 'break-word'
-    }
 
     const data = {
       columns: [
@@ -299,6 +399,11 @@ class Table extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i><strong>Daftar Perangkat</strong>
+                <CSVLink data={this.state.csv_data} headers={this.state.csv_headers} className="float-right">
+                  <Button color="secondary">
+                    <i className="fa fa-file-excel-o"></i>
+                  </Button>
+                </CSVLink>
               </CardHeader>
               <CardBody>
                 <MDBDataTable
@@ -310,206 +415,11 @@ class Table extends Component {
                 // paginationLabel={["<", ">"]}
                 />
 
-                <Modal isOpen={this.state.view} toggle={() => this.toggleView(this.state.id)} className={'modal-primary modal-lg ' + this.props.className}>
-                  <ModalHeader toggle={() => this.toggleView(this.state.id)}>Data Perangkat</ModalHeader>
-                  <ModalBody className="modal-body-display">
-                    <Col xs="12" className="m-auto">
-                      <Row>
-                        <Col xs="3">No Asset</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.id}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Nama Alat</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.name}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Merk</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.manufacturer}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Model</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.model}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Serial Number</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.serial_number}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Status</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.defect_status === "1" ? "Rusak" : "Bagus"}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Tanggal Kalibrasi</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.focus.calibration_date).toLocaleDateString()}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Akhir Kalibrasi</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.focus.due_date).toLocaleDateString()}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Periode Kalibrasi</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.calibration_period} Tahun</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Penanggung Jawab</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.supervisor}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Tanggal Pembelian</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.focus.issue_date).toLocaleDateString()}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Interval Test</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.test_interval}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">Metode Kalibrasi</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.focus.calibration_method}</Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">File Manual</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>
-                          <a href={process.env.REACT_APP_API_PATH + '/uploads/devices/' + this.state.focus.manual_file} target="_blank" rel="noopener noreferrer">{this.state.focus.manual_file}</a>
-                        </Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="3">File Spesifikasi</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>
-                          <a href={process.env.REACT_APP_API_PATH + '/uploads/devices/' + this.state.focus.spec_file} target="_blank" rel="noopener noreferrer">{this.state.focus.spec_file}</a>
-                        </Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="12" className="m-auto">
-                          <img className="d-block w-100" src={process.env.REACT_APP_API_PATH + '/uploads/devices/' + this.state.focus.documentation} alt='Table' />
-                        </Col>
-                        <div className="w-100 py-2"></div>
-                        <Col xs="12">
-                          <Certificate id={this.state.data[this.state.id].id} certificate={this.state.certificate} />
-                        </Col>
-                      </Row>
-                    </Col>
-                  </ModalBody>
-                  <ModalFooter>
-                    <Button color="secondary" onClick={() => this.toggleView(this.state.id)}>Close</Button>
-                  </ModalFooter>
-                </Modal>
+                <ViewDevice data={this.state.focus} documentation={this.state.documentation} edit_documentation={this.state.edit_documentation} handleChangeFile={this.handleChangeFile} handleEditDocumentation={this.handleEditDocumentation} id={this.state.id} loader={this.state.loader} toggleEditDocumentation={this.toggleEditDocumentation} toggleView={this.toggleView} view={this.state.view} />
 
-                <Modal isOpen={this.state.edit} toggle={() => this.toggleEdit(this.state.id)} className={'modal-primary modal-lg ' + this.props.className}>
-                  <Form onSubmit={this.handleEdit} method="post" encType="multipart/form-data" className="form-horizontal">
-                    <ModalHeader toggle={() => this.toggleEdit(this.state.id)}>Edit Perangkat</ModalHeader>
-                    <ModalBody className="mt-4 mx-4">
-                      <FormGroup row>
-                        <Col md="3">
-                          No Asset
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="text" onChange={this.handleChange} name="id" value={this.state.focus.id} disabled />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Nama Alat
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="text" onChange={this.handleChange} name="name" value={this.state.focus.name} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Merk
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="text" onChange={this.handleChange} name="manufacturer" value={this.state.focus.manufacturer} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Model
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="text" onChange={this.handleChange} name="model" value={this.state.focus.model} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Serial Number
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="text" onChange={this.handleChange} name="serial_number" value={this.state.focus.serial_number} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Tanggal Kalibrasi
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="date" onChange={this.handleChange} name="calibration_date" value={this.state.focus.calibration_date} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Akhir Kalibrasi
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="date" onChange={this.handleChange} name="due_date" value={this.state.focus.due_date} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Periode Kalibrasi (Tahun)
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="text" onChange={this.handleChange} name="calibration_period" value={this.state.focus.calibration_period} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Penanggung Jawab
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="text" onChange={this.handleChange} name="supervisor" value={this.state.focus.supervisor} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Tanggal Pembelian
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="date" onChange={this.handleChange} name="issue_date" value={this.state.focus.issue_date} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Pengecekan Antara
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="text" onChange={this.handleChange} name="test_interval" value={this.state.focus.test_interval} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Metode Kalibrasi
-                        </Col>
-                        <Col xs="12" md="9">
-                          <Input type="text" onChange={this.handleChange} name="calibration_method" value={this.state.focus.calibration_method} required />
-                        </Col>
-                      </FormGroup>
-                      <FormGroup row>
-                        <Col md="3">
-                          Dokumentasi
-                        </Col>
-                        <Col xs="12" md="9">
-                          <div className="custom-file">
-                            <Input type="file" className="custom-file-input" name="documentation" onChange={this.handleChangeEditFile} />
-                            <Label className="custom-file-label" htmlFor="customFileLang" style={{ overflow: "hidden" }} >{this.state.documentation ? this.state.documentation.name : ""} </Label>
-                          </div>
-                        </Col>
-                      </FormGroup>
-                    </ModalBody>
-                    <ModalFooter>
-                      {this.state.loader ? <Spinner name='double-bounce' fadeIn="quarter" /> : ""}
-                      <Button color="primary" type="submit" >Save Changes</Button>{' '}
-                      <Button color="secondary" onClick={() => this.toggleEdit(this.state.id)}>Cancel</Button>
-                    </ModalFooter>
-                  </Form>
-                </Modal>
+                <EditDevice edit={this.state.edit} data={this.state.focus} dropdown1={this.state.dropdown1} dropdown2={this.state.dropdown2} id={this.state.id} loader={this.state.loader} handleEdit={this.handleEdit} handleChange={this.handleChange} toggle1={this.toggle1} toggle2={this.toggle2} toggleEdit={this.toggleEdit} />
 
-                <Modal isOpen={this.state.delete} toggle={() => this.toggleDelete(this.state.id)} className={'modal-danger modal-sm ' + this.props.className}>
-                  <ModalHeader toggle={() => this.toggleDelete(this.state.id)}>Delete Perangkat</ModalHeader>
-                  <ModalBody>
-                    Do you really want to delete {this.state.data[this.state.id].id}?
-                  </ModalBody>
-                  <ModalFooter>
-                    {this.state.loader ? <Spinner name='double-bounce' fadeIn="quarter" /> : ""}
-                    <Button color="danger" onClick={() => this.handleDelete(this.state.data[this.state.id].id)}>Delete</Button>{' '}
-                    <Button color="secondary" onClick={() => this.toggleDelete(this.state.id)}>Cancel</Button>
-                  </ModalFooter>
-                </Modal>
+                <DeleteDevice _delete={this.state.delete} data={this.state.focus} id={this.state.id} loader={this.state.loader} handleDelete={this.handleDelete} toggleDelete={this.toggleDelete} />
 
               </CardBody>
             </Card>

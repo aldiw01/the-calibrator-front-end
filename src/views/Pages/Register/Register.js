@@ -258,6 +258,7 @@ class Register extends Component {
                           <DropdownItem onClick={() => this.setState({ lab: "CPE", isGoodLab: true })}>Device</DropdownItem>
                           <DropdownItem onClick={() => this.setState({ lab: "ENE", isGoodLab: true })}>Energy</DropdownItem>
                           <DropdownItem onClick={() => this.setState({ lab: "TRA", isGoodLab: true })}>Transmission</DropdownItem>
+                          <DropdownItem onClick={() => this.setState({ lab: "MNG", isGoodLab: true })}>Management</DropdownItem>
                         </DropdownMenu>
                       </ButtonDropdown>
                     </InputGroup>

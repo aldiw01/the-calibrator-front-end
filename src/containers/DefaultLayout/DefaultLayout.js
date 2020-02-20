@@ -1,5 +1,5 @@
 import React, { Component, Suspense } from 'react';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { Container } from 'reactstrap';
 import AuthService from '../../server/AuthService';
 import axios from 'axios';
@@ -28,23 +28,23 @@ class DefaultLayout extends Component {
   constructor() {
     super();
     this.Auth = new AuthService();
-    axios.defaults.headers.common['Authorization'] = 'Bearer ' + localStorage.getItem('id_token');
+    if (!this.Auth.loggedIn()) {
+      window.location = '/login';
+    }
+    axios.defaults.headers.common['Authorization'] = 'Bearer ' + this.Auth.getToken();
   }
 
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
   signOut(e) {
     e.preventDefault()
-    const user_type = this.Auth.getProfile().user_type;
     this.Auth.logout();
-    if (user_type === "Admin") this.props.history.push('/admin/login');
-    else this.props.history.push('/login');
+    this.props.history.push('/login');
   }
 
   render() {
     return (
       <div className="app">
-        {this.Auth.loggedIn() ? "" : <Redirect from="/" to="/login" />}
         <AppHeader fixed>
           <Suspense fallback={this.loading()}>
             <DefaultHeader onLogout={e => this.signOut(e)} />

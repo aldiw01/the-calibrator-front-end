@@ -7,6 +7,7 @@ import { AppHeaderDropdown, AppNavbarBrand, AppSidebarToggler } from '@coreui/re
 import logo from '../../assets/img/logo.svg'
 import sygnet from '../../assets/img/mascot.svg'
 import AuthService from '../../server/AuthService'
+import axios from 'axios'
 
 const propTypes = {
   children: PropTypes.node,
@@ -18,6 +19,18 @@ class DefaultHeader extends Component {
   constructor(props) {
     super(props);
     this.Auth = new AuthService();
+    this.state = {
+      profile_photo: ''
+    }
+    axios.get(process.env.REACT_APP_API_PATH + '/engineers/' + this.Auth.getProfile().id)
+      .then(res => {
+        this.setState({
+          profile_photo: res.data[0].photo,
+        })
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   render() {
@@ -25,6 +38,7 @@ class DefaultHeader extends Component {
     // eslint-disable-next-line
     const { children, ...attributes } = this.props;
     const user = this.Auth.getProfile().name;
+    const photo_url = this.state.profile_photo ? this.state.profile_photo : "test.jpg"
 
     return (
       <React.Fragment>
@@ -70,7 +84,7 @@ class DefaultHeader extends Component {
           </NavItem>
           <AppHeaderDropdown direction="down">
             <DropdownToggle nav>
-              <img src={'/assets/img/avatars/6.jpg'} className="img-avatar" alt="admin@bootstrapmaster.com" />
+              <img src={process.env.REACT_APP_API_PATH + '/uploads/engineers/' + photo_url} className="img-avatar" alt={photo_url} />
             </DropdownToggle>
             <DropdownMenu right style={{ right: 'auto' }}>
               <DropdownItem header tag="div" className="text-center"><strong>Settings</strong></DropdownItem>
