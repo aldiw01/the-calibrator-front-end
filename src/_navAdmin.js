@@ -57,6 +57,11 @@ export default {
       icon: 'icon-envelope-letter'
     },
     {
+      name: 'Schedules',
+      url: '/schedules',
+      icon: 'icon-calendar'
+    },
+    {
       name: 'Registrasi',
       url: '/register',
       icon: 'icon-user-follow'

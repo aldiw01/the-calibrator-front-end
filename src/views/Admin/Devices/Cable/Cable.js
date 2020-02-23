@@ -383,6 +383,12 @@ class Cable extends Component {
       rows: rows
     }
 
+    const csvButton = {
+      position: "absolute",
+      right: "20px",
+      top: "5px",
+    }
+
     return (
       <div className="animated fadeIn">
         <Row>
@@ -390,15 +396,17 @@ class Cable extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i><strong>Perangkat Lab Kabel</strong>
-                <Button color="success" className="float-right" onClick={this.toggleAdd}>
-                  Tambah{' '}
-                  <i className="fa fa-plus"></i>
-                </Button>
-                <CSVLink data={this.state.csv_data} headers={this.state.csv_headers} className="float-right mx-2">
-                  <Button color="secondary">
-                    <i className="fa fa-file-excel-o"></i>
+                <div style={csvButton}>
+                  <Button color="success" className="float-right" onClick={this.toggleAdd}>
+                    Tambah{' '}
+                    <i className="fa fa-plus"></i>
                   </Button>
-                </CSVLink>
+                  <CSVLink data={this.state.csv_data} headers={this.state.csv_headers} className="float-right mx-2">
+                    <Button color="secondary">
+                      <i className="fa fa-file-excel-o"></i>
+                    </Button>
+                  </CSVLink>
+                </div>
               </CardHeader>
               <CardBody>
                 <MDBDataTable
