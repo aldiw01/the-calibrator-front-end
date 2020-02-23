@@ -6,26 +6,37 @@ import Spinner from 'react-spinkit';
 const propTypes = {
   add: PropTypes.bool,
   data: PropTypes.object,
-  dropdown1: PropTypes.bool,
-  dropdown2: PropTypes.bool,
-  loader: PropTypes.bool,
   handleAdd: PropTypes.func,
   handleChangeNew: PropTypes.func,
   handleChangeNewFile: PropTypes.func,
-  toggle1: PropTypes.func,
-  toggle2: PropTypes.func,
+  loader: PropTypes.bool,
   toggleAdd: PropTypes.func
 };
 
-const defaultProps = {
-  add: false,
-  loader: false
-};
-
 class AddDevice extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      dropdown1: false,
+      dropdown2: false
+    }
+  }
+
+  toggle1 = () => {
+    this.setState({
+      dropdown1: !this.state.dropdown1
+    });
+  }
+
+  toggle2 = () => {
+    this.setState({
+      dropdown2: !this.state.dropdown2
+    });
+  }
+
   render() {
 
-    const { add, data, dropdown1, dropdown2, loader, handleAdd, handleChangeNew, handleChangeNewFile, toggle1, toggle2, toggleAdd } = this.props;
+    const { add, data, handleAdd, handleChangeNew, handleChangeNewFile, loader, toggleAdd } = this.props;
 
     return (
       <Modal isOpen={add} toggle={toggleAdd} className={'modal-success modal-lg'}>
@@ -77,11 +88,11 @@ class AddDevice extends Component {
                 Kondisi Alat
                         </Col>
               <Col xs="12" md="9">
-                <ButtonDropdown isOpen={dropdown1} toggle={toggle1} name="dropdown1" className="w-100">
+                <ButtonDropdown isOpen={this.state.dropdown1} toggle={this.toggle1} name="dropdown1" className="w-100">
                   <DropdownToggle className="text-left">
                     {data.defect_status === "1" ? "Rusak" : "Bagus"}
                   </DropdownToggle>
-                  <DropdownMenu>
+                  <DropdownMenu style={{ width: "100%", overflow: "auto" }}>
                     <DropdownItem onClick={handleChangeNew} name="defect_status" value="0" >Bagus</DropdownItem>
                     <DropdownItem onClick={handleChangeNew} name="defect_status" value="1" >Rusak</DropdownItem>
                   </DropdownMenu>
@@ -141,11 +152,11 @@ class AddDevice extends Component {
                 Metode Kalibrasi
                         </Col>
               <Col xs="12" md="9">
-                <ButtonDropdown isOpen={dropdown2} toggle={toggle2} name="dropdown2" className="w-100">
+                <ButtonDropdown isOpen={this.state.dropdown2} toggle={this.toggle2} name="dropdown2" className="w-100">
                   <DropdownToggle className="text-left">
                     {data.calibration_method ? data.calibration_method : "Pilih metode"}
                   </DropdownToggle>
-                  <DropdownMenu required>
+                  <DropdownMenu style={{ width: "100%", overflow: "auto" }}>
                     <DropdownItem onClick={handleChangeNew} name="calibration_method" value="Internal" >Internal</DropdownItem>
                     <DropdownItem onClick={handleChangeNew} name="calibration_method" value="Eksternal" >Eksternal</DropdownItem>
                   </DropdownMenu>
@@ -192,12 +203,11 @@ class AddDevice extends Component {
             <Button color="secondary" onClick={toggleAdd}>Cancel</Button>
           </ModalFooter>
         </Form>
-      </Modal>
+      </Modal >
     );
   }
 }
 
 AddDevice.propTypes = propTypes;
-AddDevice.defaultProps = defaultProps;
 
 export default AddDevice;

@@ -7,6 +7,7 @@ import axios from 'axios';
 
 const propTypes = {
   data: PropTypes.object,
+  getData: PropTypes.func,
   id: PropTypes.number,
   toggleView: PropTypes.func,
   view: PropTypes.bool,
@@ -53,13 +54,13 @@ class ViewDevice extends Component {
     });
   }
 
-  handleEditDocumentation = (id, event) => {
+  handleEditDocumentation = (event) => {
     event.preventDefault();
     if (window.confirm("You will change documentation picture. Are you sure?")) {
       this.setState({ loader: true });
       const data = new FormData();
       data.append('documentation', this.state.documentation);
-      axios.put(process.env.REACT_APP_API_PATH + '/devices/documentation/' + id.replace("/", "%2F"), data)
+      axios.put(process.env.REACT_APP_API_PATH + '/devices/documentation/' + this.props.data.id.replace("/", "%2F"), data)
         .then(res => {
           this.setState({
             edit_documentation: !this.state.edit_documentation,
@@ -67,7 +68,7 @@ class ViewDevice extends Component {
             documentation: ''
           })
           alert(res.data.message);
-          this.getData();
+          this.props.getData();
         })
         .catch(error => {
           alert(error);
@@ -76,13 +77,13 @@ class ViewDevice extends Component {
     }
   }
 
-  handleEditManual = (id, event) => {
+  handleEditManual = (event) => {
     event.preventDefault();
     if (window.confirm("You will change manual file. Are you sure?")) {
       this.setState({ loader: true });
       const data = new FormData();
       data.append('manual_file', this.state.manual_file);
-      axios.put(process.env.REACT_APP_API_PATH + '/devices/manual_file/' + id.replace("/", "%2F"), data)
+      axios.put(process.env.REACT_APP_API_PATH + '/devices/manual_file/' + this.props.data.id.replace("/", "%2F"), data)
         .then(res => {
           this.setState({
             edit_manual: !this.state.edit_manual,
@@ -90,7 +91,7 @@ class ViewDevice extends Component {
             manual_file: ''
           })
           alert(res.data.message);
-          this.getData();
+          this.props.getData();
         })
         .catch(error => {
           alert(error);
@@ -99,13 +100,13 @@ class ViewDevice extends Component {
     }
   }
 
-  handleEditSpecification = (id, event) => {
+  handleEditSpecification = (event) => {
     event.preventDefault();
     if (window.confirm("You will change specification file. Are you sure?")) {
       this.setState({ loader: true });
       const data = new FormData();
       data.append('spec_file', this.state.spec_file);
-      axios.put(process.env.REACT_APP_API_PATH + '/devices/spec_file/' + id.replace("/", "%2F"), data)
+      axios.put(process.env.REACT_APP_API_PATH + '/devices/spec_file/' + this.props.data.id.replace("/", "%2F"), data)
         .then(res => {
           this.setState({
             edit_specification: !this.state.edit_specification,
@@ -113,7 +114,7 @@ class ViewDevice extends Component {
             spec_file: ''
           })
           alert(res.data.message);
-          this.getData();
+          this.props.getData();
         })
         .catch(error => {
           alert(error);
@@ -177,19 +178,23 @@ class ViewDevice extends Component {
                 <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.calibration_method}</Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="3">File Manual</Col>
-                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>
-                  <Button color="secondary" className="position-absolute" style={{ right: '0', top: '-35px' }} onClick={this.toggleEditManual}>
+                <Col xs="8" className="border-bottom mt-auto" style={viewStyle}>
+                  <a href={process.env.REACT_APP_API_PATH + '/uploads/devices/' + data.manual_file} target="_blank" rel="noopener noreferrer">{data.manual_file}</a>
+                </Col>
+                <Col xs="1" className="mt-auto">
+                  <Button color="light" className="position-absolute" style={{ right: '0', top: '-35px' }} onClick={this.toggleEditManual}>
                     <i className="fa fa-pencil"></i>
                   </Button>
-                  <a href={process.env.REACT_APP_API_PATH + '/uploads/devices/' + data.manual_file} target="_blank" rel="noopener noreferrer">{data.manual_file}</a>
                 </Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="3">File Spesifikasi</Col>
-                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>
-                  <Button color="secondary" className="position-absolute" style={{ right: '0', top: '-35px' }} onClick={this.toggleEditSpecification}>
+                <Col xs="8" className="border-bottom mt-auto" style={viewStyle}>
+                  <a href={process.env.REACT_APP_API_PATH + '/uploads/devices/' + data.spec_file} target="_blank" rel="noopener noreferrer">{data.spec_file}</a>
+                </Col>
+                <Col xs="1" className="mt-auto">
+                  <Button color="light" className="position-absolute" style={{ right: '0', top: '-35px' }} onClick={this.toggleEditSpecification}>
                     <i className="fa fa-pencil"></i>
                   </Button>
-                  <a href={process.env.REACT_APP_API_PATH + '/uploads/devices/' + data.spec_file} target="_blank" rel="noopener noreferrer">{data.spec_file}</a>
                 </Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="12" className="m-auto">
@@ -211,7 +216,7 @@ class ViewDevice extends Component {
         </Modal>
 
         <Modal isOpen={this.state.edit_documentation} toggle={this.toggleEditDocumentation} className={'modal-danger'}>
-          <Form onSubmit={() => this.handleEditDocumentation(data.id)} method="post" encType="multipart/form-data">
+          <Form onSubmit={this.handleEditDocumentation} method="post" encType="multipart/form-data">
             <ModalHeader toggle={this.toggleEditDocumentation}>Choose Documentation Photo</ModalHeader>
             <ModalBody className="modal-body-display">
               <Col xs="12" className="m-auto">
@@ -220,6 +225,11 @@ class ViewDevice extends Component {
                     <Input type="file" className="custom-file-input" name="documentation" onChange={this.handleChangeFile} required />
                     <Label className="custom-file-label" htmlFor="customFileLang" style={{ overflow: "hidden" }} >{this.state.documentation ? this.state.documentation.name : ""} </Label>
                   </div>
+                  <small>
+                    <strong>
+                      Note: Hanya file (jpg/jpeg/png), max 1 MB.
+                    </strong>
+                  </small>
                 </Row>
               </Col>
             </ModalBody>
@@ -232,7 +242,7 @@ class ViewDevice extends Component {
         </Modal>
 
         <Modal isOpen={this.state.edit_manual} toggle={this.toggleEditManual} className={'modal-danger'}>
-          <Form onSubmit={() => this.handleEditManual(data.id)} method="post" encType="multipart/form-data">
+          <Form onSubmit={this.handleEditManual} method="post" encType="multipart/form-data">
             <ModalHeader toggle={this.toggleEditManual}>Choose Manual File</ModalHeader>
             <ModalBody className="modal-body-display">
               <Col xs="12" className="m-auto">
@@ -241,6 +251,11 @@ class ViewDevice extends Component {
                     <Input type="file" className="custom-file-input" name="manual_file" onChange={this.handleChangeFile} required />
                     <Label className="custom-file-label" htmlFor="customFileLang" style={{ overflow: "hidden" }} >{this.state.manual_file ? this.state.manual_file.name : ""} </Label>
                   </div>
+                  <small>
+                    <strong>
+                      Note: Hanya file (jpg/jpeg/png/pdf/doc), max 5 MB.
+                    </strong>
+                  </small>
                 </Row>
               </Col>
             </ModalBody>
@@ -253,7 +268,7 @@ class ViewDevice extends Component {
         </Modal>
 
         <Modal isOpen={this.state.edit_specification} toggle={this.toggleEditSpecification} className={'modal-danger'}>
-          <Form onSubmit={() => this.handleEditSpecification(data.id)} method="post" encType="multipart/form-data">
+          <Form onSubmit={this.handleEditSpecification} method="post" encType="multipart/form-data">
             <ModalHeader toggle={this.toggleEditSpecification}>Choose Specification File</ModalHeader>
             <ModalBody className="modal-body-display">
               <Col xs="12" className="m-auto">
@@ -262,6 +277,11 @@ class ViewDevice extends Component {
                     <Input type="file" className="custom-file-input" name="spec_file" onChange={this.handleChangeFile} required />
                     <Label className="custom-file-label" htmlFor="customFileLang" style={{ overflow: "hidden" }} >{this.state.spec_file ? this.state.spec_file.name : ""} </Label>
                   </div>
+                  <small>
+                    <strong>
+                      Note: Hanya file (jpg/jpeg/png/pdf/doc), max 5 MB.
+                    </strong>
+                  </small>
                 </Row>
               </Col>
             </ModalBody>

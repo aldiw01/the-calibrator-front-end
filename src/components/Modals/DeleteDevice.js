@@ -7,20 +7,15 @@ const propTypes = {
   _delete: PropTypes.bool,
   data: PropTypes.object,
   id: PropTypes.number,
-  loader: PropTypes.bool,
   handleDelete: PropTypes.func,
+  loader: PropTypes.bool,
   toggleDelete: PropTypes.func
-};
-
-const defaultProps = {
-  _delete: false,
-  loader: false
 };
 
 class DeleteDevice extends Component {
   render() {
 
-    const { _delete, data, id, loader, handleDelete, toggleDelete } = this.props;
+    const { _delete, data, id, handleDelete, loader, toggleDelete } = this.props;
 
     return (
       <Modal isOpen={_delete} toggle={() => toggleDelete(id)} className={'modal-danger modal-sm'}>
@@ -39,6 +34,5 @@ class DeleteDevice extends Component {
 }
 
 DeleteDevice.propTypes = propTypes;
-DeleteDevice.defaultProps = defaultProps;
 
 export default DeleteDevice;

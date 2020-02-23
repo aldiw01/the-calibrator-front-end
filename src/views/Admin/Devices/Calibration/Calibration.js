@@ -22,10 +22,8 @@ class Calibration extends Component {
       add: false,
       view: false,
       edit: false,
-      edit_documentation: false,
       delete: false,
       loader: false,
-      documentation: '',
       csv_data: [],
       csv_headers: [],
       dropdown1: false,
@@ -153,18 +151,6 @@ class Calibration extends Component {
       csv_headers: csv_headers,
       csv_data: csv_data
     })
-  }
-
-  toggle1 = () => {
-    this.setState({
-      dropdown1: !this.state.dropdown1
-    });
-  }
-
-  toggle2 = () => {
-    this.setState({
-      dropdown2: !this.state.dropdown2
-    });
   }
 
   handleChange = (event) => {
@@ -423,13 +409,13 @@ class Calibration extends Component {
                   entriesOptions={[10, 50, 100, 1000]}
                 />
 
-                <AddDevice add={this.state.add} data={this.state.new} dropdown1={this.state.dropdown1} dropdown2={this.state.dropdown2} loader={this.state.loader} handleAdd={this.handleAdd} handleChangeNew={this.handleChangeNew} handleChangeNewFile={this.handleChangeNewFile} toggle1={this.toggle1} toggle2={this.toggle2} toggleAdd={this.toggleAdd} />
+                <AddDevice add={this.state.add} data={this.state.new} handleAdd={this.handleAdd} handleChangeNew={this.handleChangeNew} handleChangeNewFile={this.handleChangeNewFile} loader={this.state.loader} toggleAdd={this.toggleAdd} />
 
-                <ViewDevice data={this.state.focus} documentation={this.state.documentation} edit_documentation={this.state.edit_documentation} handleChangeFile={this.handleChangeFile} handleEditDocumentation={this.handleEditDocumentation} id={this.state.id} loader={this.state.loader} toggleEditDocumentation={this.toggleEditDocumentation} toggleView={this.toggleView} view={this.state.view} />
+                <ViewDevice data={this.state.focus} getData={this.getData} id={this.state.id} toggleView={this.toggleView} view={this.state.view} />
 
-                <EditDevice edit={this.state.edit} data={this.state.focus} dropdown1={this.state.dropdown1} dropdown2={this.state.dropdown2} id={this.state.id} loader={this.state.loader} handleEdit={this.handleEdit} handleChange={this.handleChange} toggle1={this.toggle1} toggle2={this.toggle2} toggleEdit={this.toggleEdit} />
+                <EditDevice edit={this.state.edit} data={this.state.focus} id={this.state.id} handleEdit={this.handleEdit} handleChange={this.handleChange} loader={this.state.loader} toggleEdit={this.toggleEdit} />
 
-                <DeleteDevice _delete={this.state.delete} data={this.state.focus} id={this.state.id} loader={this.state.loader} handleDelete={this.handleDelete} toggleDelete={this.toggleDelete} />
+                <DeleteDevice _delete={this.state.delete} data={this.state.focus} id={this.state.id} handleDelete={this.handleDelete} loader={this.state.loader} toggleDelete={this.toggleDelete} />
 
               </CardBody>
             </Card>

@@ -22,10 +22,8 @@ class Energy extends Component {
       add: false,
       view: false,
       edit: false,
-      edit_documentation: false,
       delete: false,
       loader: false,
-      documentation: '',
       csv_data: [],
       csv_headers: [],
       dropdown1: false,
@@ -202,7 +200,7 @@ class Energy extends Component {
       data.append('calibration_method', this.state.new.calibration_method);
       data.append('manual_file', this.state.new.manual_file);
       data.append('spec_file', this.state.new.spec_file);
-      data.append('documentation', this.state.documentation);
+      data.append('documentation', this.state.new.documentation);
       axios.post(process.env.REACT_APP_API_PATH + '/devices', data)
         .then(res => {
           this.setState({
@@ -284,25 +282,6 @@ class Energy extends Component {
   }
 
   toggleView = (id) => {
-    if (id !== this.state.id) {
-      axios.get(process.env.REACT_APP_API_PATH + '/cal_certificates/devices/' + this.state.data[id].id.replace("/", "%2F"))
-        .then(res => {
-          this.setState({ certificate: res.data });
-        })
-        .catch(error => {
-          this.setState({
-            certificate: [{
-              id: '',
-              device_id: '',
-              calibration_date: '',
-              due_date: '',
-              test_engineer_id: '',
-              certificate_file: ''
-            }]
-          });
-        });
-    }
-
     this.setState({
       id: id,
       view: !this.state.view,
@@ -324,43 +303,6 @@ class Energy extends Component {
       delete: !this.state.delete,
       focus: this.state.data[id]
     });
-  }
-
-  handleChangeFile = (event) => {
-    this.setState({
-      [event.target.name]: event.target.files[0]
-    })
-  }
-
-  toggleEditDocumentation = () => {
-    this.setState({
-      edit_documentation: !this.state.edit_documentation,
-      documentation: ''
-    });
-  }
-
-  handleEditDocumentation = (event) => {
-    event.preventDefault();
-    if (window.confirm("You will change documentation picture. Are you sure?")) {
-      this.setState({ loader: true });
-      const data = new FormData();
-      data.append('test', this.state.edit_documentation);
-      data.append('documentation', this.state.documentation);
-      axios.put(process.env.REACT_APP_API_PATH + '/devices/documentation/' + this.state.focus.id.replace("/", "%2F"), data)
-        .then(res => {
-          this.setState({
-            edit_documentation: !this.state.edit_documentation,
-            loader: false,
-            documentation: ''
-          })
-          alert(res.data.message);
-          this.getData();
-        })
-        .catch(error => {
-          alert(error);
-          console.log(error);
-        });
-    }
   }
 
   render() {
@@ -466,16 +408,15 @@ class Energy extends Component {
                   small
                   data={dataFix}
                   entriesOptions={[10, 50, 100, 1000]}
-                // paginationLabel={["<", ">"]}
                 />
 
-                <AddDevice add={this.state.add} data={this.state.new} dropdown1={this.state.dropdown1} dropdown2={this.state.dropdown2} loader={this.state.loader} handleAdd={this.handleAdd} handleChangeNew={this.handleChangeNew} handleChangeNewFile={this.handleChangeNewFile} toggle1={this.toggle1} toggle2={this.toggle2} toggleAdd={this.toggleAdd} />
+                <AddDevice add={this.state.add} data={this.state.new} handleAdd={this.handleAdd} handleChangeNew={this.handleChangeNew} handleChangeNewFile={this.handleChangeNewFile} loader={this.state.loader} toggleAdd={this.toggleAdd} />
 
-                <ViewDevice data={this.state.focus} documentation={this.state.documentation} edit_documentation={this.state.edit_documentation} handleChangeFile={this.handleChangeFile} handleEditDocumentation={this.handleEditDocumentation} id={this.state.id} loader={this.state.loader} toggleEditDocumentation={this.toggleEditDocumentation} toggleView={this.toggleView} view={this.state.view} />
+                <ViewDevice data={this.state.focus} getData={this.getData} id={this.state.id} toggleView={this.toggleView} view={this.state.view} />
 
-                <EditDevice edit={this.state.edit} data={this.state.focus} dropdown1={this.state.dropdown1} dropdown2={this.state.dropdown2} id={this.state.id} loader={this.state.loader} handleEdit={this.handleEdit} handleChange={this.handleChange} toggle1={this.toggle1} toggle2={this.toggle2} toggleEdit={this.toggleEdit} />
+                <EditDevice edit={this.state.edit} data={this.state.focus} id={this.state.id} handleEdit={this.handleEdit} handleChange={this.handleChange} loader={this.state.loader} toggleEdit={this.toggleEdit} />
 
-                <DeleteDevice _delete={this.state.delete} data={this.state.focus} id={this.state.id} loader={this.state.loader} handleDelete={this.handleDelete} toggleDelete={this.toggleDelete} />
+                <DeleteDevice _delete={this.state.delete} data={this.state.focus} id={this.state.id} handleDelete={this.handleDelete} loader={this.state.loader} toggleDelete={this.toggleDelete} />
 
               </CardBody>
             </Card>

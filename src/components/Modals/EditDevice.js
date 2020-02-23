@@ -6,26 +6,37 @@ import Spinner from 'react-spinkit';
 const propTypes = {
   edit: PropTypes.bool,
   data: PropTypes.object,
-  dropdown1: PropTypes.bool,
-  dropdown2: PropTypes.bool,
+  handleChange: PropTypes.func,
+  handleEdit: PropTypes.func,
   id: PropTypes.number,
   loader: PropTypes.bool,
-  handleEdit: PropTypes.func,
-  handleChange: PropTypes.func,
-  toggle1: PropTypes.func,
-  toggle2: PropTypes.func,
   toggleEdit: PropTypes.func
 };
 
-const defaultProps = {
-  edit: false,
-  loader: false
-};
-
 class EditDevice extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      dropdown1: false,
+      dropdown2: false
+    }
+  }
+
+  toggle1 = () => {
+    this.setState({
+      dropdown1: !this.state.dropdown1
+    });
+  }
+
+  toggle2 = () => {
+    this.setState({
+      dropdown2: !this.state.dropdown2
+    });
+  }
+
   render() {
 
-    const { edit, data, dropdown1, dropdown2, id, loader, handleEdit, handleChange, toggle1, toggle2, toggleEdit } = this.props;
+    const { edit, data, handleChange, handleEdit, id, loader, toggleEdit } = this.props;
 
     return (
       <Modal isOpen={edit} toggle={() => toggleEdit(id)} className={'modal-primary modal-lg'}>
@@ -77,7 +88,7 @@ class EditDevice extends Component {
                 Status
               </Col>
               <Col xs="12" md="9">
-                <ButtonDropdown isOpen={dropdown1} toggle={toggle1} name="dropdown1" className="w-100">
+                <ButtonDropdown isOpen={this.state.dropdown1} toggle={this.toggle1} name="dropdown1" className="w-100">
                   <DropdownToggle className="text-left">
                     {data.defect_status === "1" ? "Rusak" : "Bagus"}
                   </DropdownToggle>
@@ -141,7 +152,7 @@ class EditDevice extends Component {
                 Metode Kalibrasi
               </Col>
               <Col xs="12" md="9">
-                <ButtonDropdown isOpen={dropdown2} toggle={toggle2} name="dropdown2" className="w-100">
+                <ButtonDropdown isOpen={this.state.dropdown2} toggle={this.toggle2} name="dropdown2" className="w-100">
                   <DropdownToggle className="text-left">
                     {data.calibration_method}
                   </DropdownToggle>
@@ -165,6 +176,5 @@ class EditDevice extends Component {
 }
 
 EditDevice.propTypes = propTypes;
-EditDevice.defaultProps = defaultProps;
 
 export default EditDevice;
