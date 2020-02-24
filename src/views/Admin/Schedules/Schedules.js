@@ -16,6 +16,8 @@ class Schedules extends Component {
       window.location = '/login';
     }
     this.state = {
+      csv_data: [],
+      csv_headers: [],
       data: [{
         id: '',
         name: '',
@@ -75,19 +77,26 @@ class Schedules extends Component {
         events.push({
           id: 2 * i,
           title: items.id,
+          manufacturer: items.manufacturer,
+          model: items.model,
           start: new Date(items.regular_check_date),
           end: new Date(items.regular_check_date),
           allDay: true,
-          desc: items.name
+          desc: items.name,
+          calibration_method: items.calibration_method
         });
         events.push({
           id: 2 * i + 1,
           title: items.id,
+          manufacturer: items.manufacturer,
+          model: items.model,
           start: new Date(items.due_date),
           end: new Date(items.due_date),
           allDay: true,
           desc: items.name,
-          hexColor: "FF0000"
+          calibration_method: items.calibration_method,
+          hexColor: "cf0f17",
+          selectedColor: "9f0c12"
         });
       }
     });
@@ -103,35 +112,23 @@ class Schedules extends Component {
       { label: "NAMA ALAT UKUR", key: "name" },
       { label: "MERK", key: "manufacturer" },
       { label: "TIPE", key: "model" },
-      { label: "NO. SERI", key: "serial_number" },
-      { label: "KONDISI", key: "defect_status" },
-      { label: "BUKU MANUAL", key: "manual" },
-      { label: "TANGGAL KALIBRASI", key: "calibration_date" },
-      { label: "AKHIR KALIBRASI", key: "due_date" },
-      { label: "PER KALIBRASI", key: "calibration_period" },
-      { label: "PENANGGUNG JAWAB", key: "supervisor" },
       { label: "METODE KALIBRASI", key: "calibration_method" },
-      { label: "TANGGAL PEMBELIAN", key: "issue_date" }
+      { label: "JADWAL", key: "schedule" },
+      { label: "KEGIATAN", key: "activity" },
     ];
 
     var csv_data = [];
-    this.state.data.forEach(function (items, i) {
+    this.state.events.forEach(function (items, i) {
       if (items.id !== '') {
         csv_data.push({
           no: i + 1,
-          id: items.id,
-          name: items.name,
+          id: items.title,
+          name: items.desc,
           manufacturer: items.manufacturer,
           model: items.model,
-          serial_number: items.serial_number,
-          defect_status: items.defect_status === "1" ? "Rusak" : "Bagus",
-          manual: items.manual_file ? "Ada" : "Tidak Ada",
-          calibration_date: items.calibration_date,
-          due_date: items.due_date,
-          calibration_period: items.calibration_period,
-          supervisor: items.supervisor,
           calibration_method: items.calibration_method,
-          issue_date: items.issue_date
+          schedule: new Date(items.start).toLocaleDateString("en-GB"),
+          activity: items.hexColor !== undefined ? "Recalibration" : "Regular check",
         });
       }
     });
@@ -142,18 +139,17 @@ class Schedules extends Component {
   }
 
   eventStyleGetter(event, start, end, isSelected) {
-    var backgroundColor = '#' + event.hexColor;
+    var backgroundColor
+    if (isSelected) backgroundColor = '#' + event.selectedColor;
+    else backgroundColor = '#' + event.hexColor;
+
     var style = {
       backgroundColor: backgroundColor,
-      borderRadius: '0px',
-      color: 'white',
-      border: backgroundColor + ' 5px',
-      display: 'block',
-      left: '20%',
-    };
+    }
+
     return {
       style: style
-    };
+    }
   }
 
   render() {
@@ -171,11 +167,15 @@ class Schedules extends Component {
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i><strong>Jadwal Regular Check</strong>
-                {/* <CSVLink data="" headers="" className="float-right mx-2" style={csvButton}>
-                  <Button color="secondary">
-                    <i className="fa fa-file-excel-o"></i>
-                  </Button>
-                </CSVLink> */}
+                <div className="float-right">
+                  <i className="fa fa-square mr-1" style={{ color: "#cf0f17" }}></i><strong className="mr-3">Calibration Due</strong>
+                  <i className="fa fa-square mr-1" style={{ color: "#3174ad" }}></i><strong className="mr-5">Regular check</strong>
+                  <CSVLink data={this.state.csv_data} headers={this.state.csv_headers} className="float-right mx-2" style={csvButton}>
+                    <Button color="secondary">
+                      <i className="fa fa-file-excel-o"></i>
+                    </Button>
+                  </CSVLink>
+                </div>
               </CardHeader>
               <CardBody>
                 <Calendar
