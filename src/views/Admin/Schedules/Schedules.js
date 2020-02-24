@@ -16,23 +16,36 @@ class Schedules extends Component {
       window.location = '/login';
     }
     this.state = {
+      data: [{
+        id: '',
+        name: '',
+        manufacturer: '',
+        model: '',
+        calibration_date: '',
+        due_date: '',
+        calibration_method: '',
+        documentation: '',
+        regular_check_date: ''
+      }],
       events: [
         {
           title: 'Lunch',
-          startDate: new Date(2020, 1, 12, 12),
-          endDate: new Date(2020, 1, 12, 13),
+          start: new Date(2020, 1, 12),
+          end: new Date(2020, 1, 12),
+          allDay: true,
           desc: 'Power lunch'
         },
         {
           title: 'Beakfast',
-          startDate: new Date(2020, 1, 12, 1),
-          endDate: new Date(2020, 1, 12, 8),
+          start: new Date(2020, 1, 12),
+          end: new Date(2020, 1, 12),
+          allDay: true,
           desc: 'Power lunch'
         },
         {
           title: 'Dinner',
-          startDate: new Date(2020, 1, 12, 18),
-          endDate: new Date(2020, 1, 12, 19),
+          start: new Date(2020, 1, 12, 18),
+          end: new Date(2020, 1, 12, 19),
           desc: 'Power lunch'
         }
       ],
@@ -44,14 +57,43 @@ class Schedules extends Component {
   }
 
   getData = () => {
-    axios.get(process.env.REACT_APP_API_PATH + '/devices/owner/CAL')
+    axios.get(process.env.REACT_APP_API_PATH + '/devices/schedule/regular_check')
       .then(res => {
         this.setState({ data: res.data });
+        this.setCalendarEvents();
         this.getCSVData();
       })
       .catch(error => {
         console.log(error);
       });
+  }
+
+  setCalendarEvents = () => {
+    var events = []
+    this.state.data.forEach(function (items, i) {
+      if (items.id !== '') {
+        events.push({
+          id: 2 * i,
+          title: items.id,
+          start: new Date(items.regular_check_date),
+          end: new Date(items.regular_check_date),
+          allDay: true,
+          desc: items.name
+        });
+        events.push({
+          id: 2 * i + 1,
+          title: items.id,
+          start: new Date(items.due_date),
+          end: new Date(items.due_date),
+          allDay: true,
+          desc: items.name,
+          hexColor: "FF0000"
+        });
+      }
+    });
+    this.setState({
+      events: events
+    })
   }
 
   getCSVData = () => {
@@ -99,6 +141,21 @@ class Schedules extends Component {
     })
   }
 
+  eventStyleGetter(event, start, end, isSelected) {
+    var backgroundColor = '#' + event.hexColor;
+    var style = {
+      backgroundColor: backgroundColor,
+      borderRadius: '0px',
+      color: 'white',
+      border: backgroundColor + ' 5px',
+      display: 'block',
+      left: '20%',
+    };
+    return {
+      style: style
+    };
+  }
+
   render() {
     const localizer = momentLocalizer(moment)
     const csvButton = {
@@ -127,6 +184,8 @@ class Schedules extends Component {
                   startAccessor="start"
                   endAccessor="end"
                   style={{ height: 500 }}
+                  eventPropGetter={this.eventStyleGetter}
+                  views={["month", "week", "day"]}
                 />
               </CardBody>
             </Card>
