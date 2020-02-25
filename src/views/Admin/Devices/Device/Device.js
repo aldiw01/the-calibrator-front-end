@@ -368,7 +368,7 @@ class Device extends Component {
           due_date: items.due_date,
           defect_status: items.defect_status === "1" ? "Rusak" : "Bagus",
           actions: <React.Fragment>
-            <button title="View Data" className="px-3 py-1 mr-1 btn btn-primary" onClick={() => toggleView(i)}><i className="fa fa-search"></i></button>
+            <button title="View Data" className="px-3 py-1 mr-1 btn btn-primary" onClick={() => toggleView(i)}><i className="fa fa-folder-open"></i></button>
             {role === "2" ?
               <React.Fragment>
                 <button title="Edit Data" className="px-3 py-1 mr-1 btn btn-warning" onClick={() => toggleEdit(i)}><i className="fa fa-pencil"></i></button>

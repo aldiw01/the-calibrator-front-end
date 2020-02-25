@@ -1,7 +1,8 @@
 import React, { Component, lazy, Suspense } from 'react';
-import { Col, Row } from 'reactstrap';
+import { Button, Col, Form, FormGroup, Input, InputGroup, InputGroupAddon, Row } from 'reactstrap';
 import axios from 'axios';
 import Spinner from 'react-spinkit';
+import { Redirect, Link } from 'react-router-dom';
 
 const Devices = lazy(() => import('components/Widgets/Devices'));
 // const Calibrated = lazy(() => import('components/Widgets/Calibrated'));
@@ -22,6 +23,7 @@ class Dashboard extends Component {
       },
       dropdownOpen: false,
       radioSelected: 2,
+      something: ''
     };
 
   }
@@ -57,10 +59,39 @@ class Dashboard extends Component {
       <Spinner name='double-bounce' fadeIn="quarter" className="m-auto" />
     </div>
 
+  searchDevices = (event) => {
+    event.preventDefault();
+    return <Redirect to={"/devices/table/all/search/" + this.state.something} />
+  }
+
+  handleChange = (event) => {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
   render() {
 
     return (
       <div className="animated fadeIn">
+        <Row>
+          <Col xs="12">
+            <Form onSubmit={this.searchDevices} method="post" className="form-horizontal">
+              <FormGroup>
+                <div className="controls">
+                  <InputGroup>
+                    <Input id="appendedInputButton" name="something" value={this.state.something} onChange={this.handleChange} placeholder="Search device(s) ..." size="16" type="text" />
+                    <InputGroupAddon addonType="append">
+                      <Link to={"/devices/table/all/search/" + this.state.something}>
+                        <Button color="danger" type="submit"><i className="fa fa-search"></i></Button>
+                      </Link>
+                    </InputGroupAddon>
+                  </InputGroup>
+                </div>
+              </FormGroup>
+            </Form>
+          </Col>
+        </Row>
         <Row>
           <Col xs="12" md="6" lg="2">
             <Suspense fallback={this.loading()}>

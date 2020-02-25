@@ -89,6 +89,15 @@ class Table extends Component {
         .catch(error => {
           console.log(error);
         });
+    } else if (this.props.match.params.type === "search") {
+      axios.get(process.env.REACT_APP_API_PATH + '/devices/search/' + status)
+        .then(res => {
+          this.setState({ data: res.data });
+          this.getCSVData();
+        })
+        .catch(error => {
+          console.log(error);
+        });
     } else {
       axios.get(process.env.REACT_APP_API_PATH + '/devices/calibration_status/' + this.props.match.params.lab)
         .then(res => {
@@ -283,7 +292,7 @@ class Table extends Component {
           due_date: items.due_date,
           defect_status: items.defect_status === "1" ? "Rusak" : "Bagus",
           actions: <React.Fragment>
-            <button title="View Data" className="px-3 py-1 mr-1 btn btn-primary" onClick={() => toggleView(i)}><i className="fa fa-search"></i></button>
+            <button title="View Data" className="px-3 py-1 mr-1 btn btn-primary" onClick={() => toggleView(i)}><i className="fa fa-folder-open"></i></button>
             {role === "2" ?
               <React.Fragment>
                 <button title="Edit Data" className="px-3 py-1 mr-1 btn btn-warning" onClick={() => toggleEdit(i)}><i className="fa fa-pencil"></i></button>
