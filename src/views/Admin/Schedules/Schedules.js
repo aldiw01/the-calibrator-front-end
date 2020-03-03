@@ -31,24 +31,11 @@ class Schedules extends Component {
       }],
       events: [
         {
-          title: 'Lunch',
-          start: new Date(2020, 1, 12),
-          end: new Date(2020, 1, 12),
-          allDay: true,
-          desc: 'Power lunch'
-        },
-        {
-          title: 'Beakfast',
-          start: new Date(2020, 1, 12),
-          end: new Date(2020, 1, 12),
-          allDay: true,
-          desc: 'Power lunch'
-        },
-        {
-          title: 'Dinner',
-          start: new Date(2020, 1, 12, 18),
-          end: new Date(2020, 1, 12, 19),
-          desc: 'Power lunch'
+          title: '',
+          start: '',
+          end: '',
+          allDay: '',
+          desc: ''
         }
       ],
     }
@@ -59,7 +46,8 @@ class Schedules extends Component {
   }
 
   getData = () => {
-    axios.get(process.env.REACT_APP_API_PATH + '/devices/schedule/regular_check')
+    const lab = this.props.match.url.slice(-3) === "les" ? '' : this.props.match.url.slice(-3)
+    axios.get(process.env.REACT_APP_API_PATH + '/devices/schedule/regular_check/' + lab)
       .then(res => {
         this.setState({ data: res.data });
         this.setCalendarEvents();

@@ -36,8 +36,14 @@ const routes = [
   { path: '/devices/table/:lab', exact: true, name: 'Table', component: D_Table },
   { path: '/devices/table/:lab/:type/:status', exact: true, name: 'Table', component: D_Table },
 
+  { path: '/schedules', exact: true, name: 'Schedules', component: Schedules },
+  { path: '/schedules/cal', name: 'Calibration', component: Schedules },
+  { path: '/schedules/tra', name: 'Transmission', component: Schedules },
+  { path: '/schedules/cab', name: 'Cable', component: Schedules },
+  { path: '/schedules/cpe', name: 'Device', component: Schedules },
+  { path: '/schedules/ene', name: 'Energy', component: Schedules },
+
   { path: '/certificates', name: 'Certificates', component: Certificates },
-  { path: '/schedules', name: 'Schedules', component: Schedules },
   { path: '/profile', name: 'Profile', component: Profile },
   { path: '/register', name: 'Register', component: Register },
   { path: '/:id', exact: true, name: 'Page 404', component: Page404 }

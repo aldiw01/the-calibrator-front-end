@@ -157,10 +157,10 @@ class ViewDevice extends Component {
                 <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.defect_status === "1" ? "Rusak" : "Bagus"}</Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="3">Tanggal Kalibrasi</Col>
-                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(data.calibration_date).toLocaleDateString()}</Col>
+                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(data.calibration_date).toLocaleDateString("en-GB")}</Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="3">Akhir Kalibrasi</Col>
-                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(data.due_date).toLocaleDateString()}</Col>
+                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(data.due_date).toLocaleDateString("en-GB")}</Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="3">Periode Kalibrasi</Col>
                 <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.calibration_period} Tahun</Col>
@@ -169,7 +169,7 @@ class ViewDevice extends Component {
                 <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.supervisor}</Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="3">Tanggal Pembelian</Col>
-                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(data.issue_date).toLocaleDateString()}</Col>
+                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(data.issue_date).toLocaleDateString("en-GB")}</Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="3">Pengecekan Antara</Col>
                 <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.test_interval}</Col>

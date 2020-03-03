@@ -59,7 +59,39 @@ export default {
     {
       name: 'Schedules',
       url: '/schedules',
-      icon: 'icon-calendar'
+      icon: 'icon-calendar',
+      children: [
+        {
+          name: 'All Lab',
+          url: '/schedules',
+          icon: 'icon-globe',
+        },
+        {
+          name: 'Lab Kalibrasi',
+          url: '/schedules/cal',
+          icon: 'icon-wrench',
+        },
+        {
+          name: 'Lab Transmisi',
+          url: '/schedules/tra',
+          icon: 'icon-feed',
+        },
+        {
+          name: 'Lab Kabel',
+          url: '/schedules/cab',
+          icon: 'icon-diamond',
+        },
+        {
+          name: 'Lab Device',
+          url: '/schedules/cpe',
+          icon: 'icon-screen-desktop',
+        },
+        {
+          name: 'Lab Energi',
+          url: '/schedules/ene',
+          icon: 'icon-energy',
+        }
+      ]
     },
     {
       name: 'Registrasi',

@@ -61,7 +61,7 @@ class Dashboard extends Component {
 
   searchDevices = (event) => {
     event.preventDefault();
-    return <Redirect to={"/devices/table/all/search/" + this.state.something} />
+    return <Redirect to={"/devices/table/all/search/" + this.state.something.replace("/", "%2f")} />
   }
 
   handleChange = (event) => {
@@ -80,9 +80,9 @@ class Dashboard extends Component {
               <FormGroup>
                 <div className="controls">
                   <InputGroup>
-                    <Input id="appendedInputButton" name="something" value={this.state.something} onChange={this.handleChange} placeholder="Search device(s) ..." size="16" type="text" />
+                    <Input id="appendedInputButton" name="something" value={this.state.something} onChange={this.handleChange} placeholder="Search device(s) ..." type="text" required />
                     <InputGroupAddon addonType="append">
-                      <Link to={"/devices/table/all/search/" + this.state.something}>
+                      <Link to={"/devices/table/all/search/" + this.state.something.replace("/", "%2f")}>
                         <Button color="danger" type="submit"><i className="fa fa-search"></i></Button>
                       </Link>
                     </InputGroupAddon>
@@ -135,7 +135,7 @@ class Dashboard extends Component {
 
           <Col xs="12" md="6" lg="2">
             <Suspense fallback={this.loading()}>
-              <Devices dataBox={() => ({ variant: 'icon-globe', jumlah: this.state.data.tot, bagus: this.state.data.tot - this.state.data.d_tot, rusak: this.state.data.d_tot, recalibration: this.state.data.u_tot })} lab="%2F" >
+              <Devices dataBox={() => ({ variant: 'icon-globe', jumlah: this.state.data.tot, bagus: this.state.data.tot - this.state.data.d_tot, rusak: this.state.data.d_tot, recalibration: this.state.data.u_tot })} lab="%2f" >
                 Total
               </Devices>
             </Suspense>
