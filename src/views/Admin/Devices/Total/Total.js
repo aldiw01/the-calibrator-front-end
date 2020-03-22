@@ -239,7 +239,7 @@ class Total extends Component {
     event.preventDefault();
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      axios.put(process.env.REACT_APP_API_PATH + '/devices/' + this.state.data[this.state.id].id.replace("/", "%2F"), this.state.focus)
+      axios.put(process.env.REACT_APP_API_PATH + '/devices/' + this.state.data[this.state.id].id.replace(new RegExp("/", 'g'), "%2F"), this.state.focus)
         .then(res => {
           this.setState({
             edit: !this.state.edit,
@@ -258,7 +258,7 @@ class Total extends Component {
   handleDelete = (id) => {
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      axios.delete(process.env.REACT_APP_API_PATH + '/devices/ever/' + id.replace("/", "%2F"))
+      axios.delete(process.env.REACT_APP_API_PATH + '/devices/ever/' + id.replace(new RegExp("/", 'g'), "%2F"))
         .then(res => {
           this.setState({
             delete: !this.state.delete,

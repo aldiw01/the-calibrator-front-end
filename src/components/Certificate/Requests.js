@@ -4,7 +4,7 @@ import axios from 'axios';
 import AuthService from 'server/AuthService';
 import Spinner from 'react-spinkit';
 
-class Certificate extends Component {
+class Requests extends Component {
   constructor(props) {
     super(props)
     this.Auth = new AuthService();
@@ -13,7 +13,7 @@ class Certificate extends Component {
     }
     this.state = {
       id: 0,
-      device_id: this.props.id,
+      request_id: this.props.id,
       add: false,
       view: false,
       edit: false,
@@ -40,7 +40,7 @@ class Certificate extends Component {
         device_id: this.props.id,
         calibration_date: '',
         due_date: '',
-        test_engineer_id: '',
+        test_engineer_id: this.Auth.getProfile().id,
         certificate_file: ''
       }
     }
@@ -51,7 +51,7 @@ class Certificate extends Component {
   }
 
   getData = () => {
-    axios.get(localStorage.getItem('serverAPI') + '/cal_certificates/devices/' + this.state.device_id.replace("/", "%2F"))
+    axios.get(localStorage.getItem('serverAPI') + '/cal_certificates/devices/' + this.state.request_id.replace(new RegExp("/", 'g'), "%2F"))
       .then(res => {
         this.setState({ data: res.data });
       })
@@ -195,6 +195,9 @@ class Certificate extends Component {
   }
 
   render() {
+    const role = this.Auth.getProfile().role
+    const lab = this.Auth.getProfile().lab
+
     var viewStyle = {
       overflowWrap: 'break-word'
     }
@@ -204,11 +207,12 @@ class Certificate extends Component {
         <Col xs="12">
           <Card>
             <CardHeader>
-              <i className="fa fa-history"></i><strong>Daftar Sertifikat</strong>
-              <Button color="success" className="float-right" onClick={this.toggleAdd}>
-                Tambah{' '}
-                <i className="fa fa-plus"></i>
-              </Button>
+              <i className="fa fa-history"></i><strong>Test Reports</strong>
+              {role === "2" || lab === this.props.id.slice(-3) ?
+                <Button color="success" className="float-right" onClick={this.toggleAdd}>
+                  Tambah{' '}
+                  <i className="fa fa-plus"></i>
+                </Button> : ""}
             </CardHeader>
             <CardBody>
               <ListGroup>
@@ -219,21 +223,22 @@ class Certificate extends Component {
                         <a href={process.env.REACT_APP_API_PATH + '/uploads/cal_certificates/' + item.certificate_file} target="_blank" rel="noopener noreferrer">
                           <ListGroupItemHeading>{item.id}</ListGroupItemHeading>
                         </a>
-                        <div className="float-right">
-                          <Button color="warning" className="mr-1" onClick={() => this.toggleEdit(i)}>
-                            <i className="fa fa-pencil"></i>
-                          </Button>
-                          <Button color="danger" onClick={() => this.toggleDelete(i)}>
-                            <i className="fa fa-minus-circle"></i>
-                          </Button>
-                        </div>
+                        {role === "2" || lab === this.props.id.slice(-3) ?
+                          <div className="float-right">
+                            <Button color="warning" className="mr-1" onClick={() => this.toggleEdit(i)}>
+                              <i className="fa fa-pencil"></i>
+                            </Button>
+                            <Button color="danger" onClick={() => this.toggleDelete(i)}>
+                              <i className="fa fa-minus-circle"></i>
+                            </Button>
+                          </div> : ""}
                       </div>
                       <Row>
-                        <Col xs="3">Tanggal Kalibrasi</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{item.calibration_date}</Col>
+                        <Col xs="3">Tanggal Pengujian</Col>
+                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(item.calibration_date).toLocaleDateString("en-GB")}</Col>
                         <div className="w-100 py-2"></div>
-                        <Col xs="3">Akhir Kalibrasi</Col>
-                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{item.due_date}</Col>
+                        <Col xs="3">Akhir Pengujian</Col>
+                        <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(item.due_date).toLocaleDateString("en-GB")}</Col>
                         <div className="w-100 py-2"></div>
                         <Col xs="3">ID Engineer</Col>
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{item.test_engineer_id}</Col>
@@ -258,7 +263,7 @@ class Certificate extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      No Asset
+                      No SPK
                         </Col>
                     <Col xs="12" md="9">
                       <Input type="text" onChange={this.handleChangeNew} name="device_id" value={this.state.new.device_id} disabled />
@@ -266,7 +271,7 @@ class Certificate extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      Tanggal Kalibrasi
+                      Tanggal Pengujian
                         </Col>
                     <Col xs="12" md="9">
                       <Input type="date" onChange={this.handleChangeNew} name="calibration_date" value={this.state.new.calibration_date} required />
@@ -274,7 +279,7 @@ class Certificate extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      Akhir Kalibrasi
+                      Akhir Pengujian
                         </Col>
                     <Col xs="12" md="9">
                       <Input type="date" onChange={this.handleChangeNew} name="due_date" value={this.state.new.due_date} required />
@@ -285,7 +290,7 @@ class Certificate extends Component {
                       Engineer ID
                         </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" onChange={this.handleChangeNew} name="test_engineer_id" value={this.state.new.test_engineer_id} required />
+                      <Input type="text" onChange={this.handleChangeNew} name="test_engineer_id" value={this.state.new.test_engineer_id} disabled />
                     </Col>
                   </FormGroup>
                   <FormGroup row>
@@ -314,7 +319,7 @@ class Certificate extends Component {
                 <ModalBody className="mt-4 mx-4">
                   <FormGroup row>
                     <Col md="3">
-                      No Asset
+                      No SPK
                         </Col>
                     <Col xs="12" md="9">
                       <Input type="text" onChange={this.handleChange} name="id" value={this.state.focus.id} disabled />
@@ -322,7 +327,7 @@ class Certificate extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      Tanggal Kalibrasi
+                      Tanggal Pengujian
                         </Col>
                     <Col xs="12" md="9">
                       <Input type="date" onChange={this.handleChange} name="calibration_date" value={this.state.focus.calibration_date} required />
@@ -330,7 +335,7 @@ class Certificate extends Component {
                   </FormGroup>
                   <FormGroup row>
                     <Col md="3">
-                      Akhir Kalibrasi
+                      Akhir Pengujian
                         </Col>
                     <Col xs="12" md="9">
                       <Input type="date" onChange={this.handleChange} name="due_date" value={this.state.focus.due_date} required />
@@ -341,7 +346,7 @@ class Certificate extends Component {
                       Engineer ID
                         </Col>
                     <Col xs="12" md="9">
-                      <Input type="text" onChange={this.handleChange} name="test_engineer_id" value={this.state.focus.test_engineer_id} required />
+                      <Input type="text" onChange={this.handleChange} name="test_engineer_id" value={this.state.focus.test_engineer_id} disabled />
                     </Col>
                   </FormGroup>
                 </ModalBody>
@@ -372,4 +377,4 @@ class Certificate extends Component {
   }
 }
 
-export default Certificate;
+export default Requests;

@@ -253,6 +253,11 @@ class Register extends Component {
                           {this.state.lab}
                         </DropdownToggle>
                         <DropdownMenu>
+                          {/* 
+                          ================================================================
+                          Lab value is extreamly important for access authority section. Changing the value will require some adjustment in API routing 
+                          ================================================================
+                          */}
                           <DropdownItem onClick={() => this.setState({ lab: "CAB", isGoodLab: true })}>Cable</DropdownItem>
                           <DropdownItem onClick={() => this.setState({ lab: "CAL", isGoodLab: true })}>Calibration</DropdownItem>
                           <DropdownItem onClick={() => this.setState({ lab: "CPE", isGoodLab: true })}>Device</DropdownItem>

@@ -168,7 +168,7 @@ class Table extends Component {
     event.preventDefault();
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      axios.put(process.env.REACT_APP_API_PATH + '/devices/' + this.state.data[this.state.id].id.replace("/", "%2F"), this.state.focus)
+      axios.put(process.env.REACT_APP_API_PATH + '/devices/' + this.state.data[this.state.id].id.replace(new RegExp("/", 'g'), "%2F"), this.state.focus)
         .then(res => {
           this.setState({
             edit: !this.state.edit,
@@ -188,7 +188,7 @@ class Table extends Component {
   handleDelete = (id) => {
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      axios.delete(process.env.REACT_APP_API_PATH + '/devices/ever/' + id.replace("/", "%2F"))
+      axios.delete(process.env.REACT_APP_API_PATH + '/devices/ever/' + id.replace(new RegExp("/", 'g'), "%2F"))
         .then(res => {
           this.setState({
             delete: !this.state.delete,
@@ -230,6 +230,8 @@ class Table extends Component {
 
   render() {
     const role = this.Auth.getProfile().role
+    const lab = this.Auth.getProfile().lab
+    const lab_param = this.props.match.params.lab
 
     const data = {
       columns: [
@@ -293,7 +295,7 @@ class Table extends Component {
           defect_status: items.defect_status === "1" ? "Rusak" : "Bagus",
           actions: <React.Fragment>
             <button title="View Data" className="px-3 py-1 mr-1 btn btn-primary" onClick={() => toggleView(i)}><i className="fa fa-folder-open"></i></button>
-            {role === "2" ?
+            {role === "2" || lab === lab_param ?
               <React.Fragment>
                 <button title="Edit Data" className="px-3 py-1 mr-1 btn btn-warning" onClick={() => toggleEdit(i)}><i className="fa fa-pencil"></i></button>
                 <button title="Delete Data" className="px-3 py-1 mr-1 btn btn-danger" onClick={() => toggleDelete(i)}><i className="fa fa-minus-circle"></i></button>

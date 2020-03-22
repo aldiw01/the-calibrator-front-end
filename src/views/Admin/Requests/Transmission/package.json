@@ -1,6 +1,0 @@
-{
-  "name": "Transmission",
-  "version": "0.0.0",
-  "private": true,
-  "main": "./Transmission.js"
-}
