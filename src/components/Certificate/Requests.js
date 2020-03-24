@@ -240,7 +240,7 @@ class Requests extends Component {
                         <Col xs="3">Akhir Pengujian</Col>
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(item.due_date).toLocaleDateString("en-GB")}</Col>
                         <div className="w-100 py-2"></div>
-                        <Col xs="3">ID Engineer</Col>
+                        <Col xs="3">Engineer</Col>
                         <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{item.test_engineer_id}</Col>
                       </Row>
                     </ListGroupItem>

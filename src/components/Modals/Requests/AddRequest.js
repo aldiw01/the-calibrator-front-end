@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, ButtonDropdown, Col, DropdownItem, DropdownMenu, DropdownToggle, Modal, ModalBody, ModalFooter, ModalHeader, Label, Form, FormGroup, Input } from 'reactstrap';
+import { Button, ButtonDropdown, Col, DropdownItem, DropdownMenu, DropdownToggle, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import Spinner from 'react-spinkit';
+import Autosuggest from 'react-autosuggest';
+import axios from 'axios';
 
 const propTypes = {
   add: PropTypes.bool,
   data: PropTypes.object,
   handleAdd: PropTypes.func,
   handleChangeNew: PropTypes.func,
+  handleChangeNewEngineer1: PropTypes.func,
+  handleChangeNewEngineer2: PropTypes.func,
+  handleChangeNewEngineer3: PropTypes.func,
   handleChangeNewFile: PropTypes.func,
   loader: PropTypes.bool,
   toggleAdd: PropTypes.func
@@ -17,9 +22,44 @@ class AddRequest extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      data: [{
+        id: '',
+        name: '',
+        lab: '',
+        email: '',
+        role: '',
+        photo: '',
+        registered: '',
+        updated: ''
+      }],
+      // data: [{
+      //   name: 'C',
+      //   year: 1972
+      // },
+      // {
+      //   name: 'Elm',
+      //   year: 2012
+      // }],
       dropdown1: false,
-      dropdown2: false
+      dropdown2: false,
+      suggestions1: [],
+      suggestions2: [],
+      suggestions3: []
     }
+  }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData = () => {
+    axios.get(process.env.REACT_APP_API_PATH + '/engineers')
+      .then(res => {
+        this.setState({ data: res.data });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   toggle1 = () => {
@@ -34,9 +74,105 @@ class AddRequest extends Component {
     });
   }
 
+  // Autosuggest will call this function every time you need to update suggestions.
+  // You already implemented this logic above, so just use it.
+  // ================================================================
+  // Suggestions 1
+  onSuggestionsFetchRequested1 = ({ value }) => {
+    this.setState({
+      suggestions1: this.getSuggestions(value)
+    });
+  };
+
+  // Autosuggest will call this function every time you need to clear suggestions.
+  onSuggestionsClearRequested1 = () => {
+    this.setState({
+      suggestions1: []
+    });
+  };
+
+  // ================================================================
+  // Suggestions 2
+  onSuggestionsFetchRequested2 = ({ value }) => {
+    this.setState({
+      suggestions2: this.getSuggestions(value)
+    });
+  };
+
+  // Autosuggest will call this function every time you need to clear suggestions.
+  onSuggestionsClearRequested2 = () => {
+    this.setState({
+      suggestions2: []
+    });
+  };
+
+  // ================================================================
+  // Suggestions 3
+  onSuggestionsFetchRequested3 = ({ value }) => {
+    this.setState({
+      suggestions3: this.getSuggestions(value)
+    });
+  };
+
+  // Autosuggest will call this function every time you need to clear suggestions.
+  onSuggestionsClearRequested3 = () => {
+    this.setState({
+      suggestions3: []
+    });
+  };
+
+  // Teach Autosuggest how to calculate suggestions for any given input value.
+  getSuggestions = value => {
+    const inputValue = value.trim().toLowerCase();
+    const inputLength = inputValue.length;
+    const regex = new RegExp(`${inputValue}`, 'gi')
+
+    return inputLength === 0 ? [] : this.state.data.filter(item =>
+      item.id.match(regex) || item.name.match(regex)
+    );
+  };
+
+  // When suggestion is clicked, Autosuggest needs to populate the input
+  // based on the clicked suggestion. Teach Autosuggest how to calculate the
+  // input value for every given suggestion.
+  getSuggestionValue = suggestion => suggestion.id;
+
+  // Use your imagination to render suggestions.
+  renderSuggestion = suggestion => (
+    <div>
+      {suggestion.id} - {suggestion.name}
+    </div>
+  );
+
+  renderInputComponent = inputProps => (
+    <Input {...inputProps} required />
+  );
+
   render() {
 
-    const { add, data, handleAdd, handleChangeNew, handleChangeNewFile, loader, toggleAdd } = this.props;
+    const { add, data, handleAdd, handleChangeNew, handleChangeNewEngineer1, handleChangeNewEngineer2, handleChangeNewEngineer3, handleChangeNewFile, loader, toggleAdd } = this.props;
+
+    // Autosuggest will pass through all these props to the input.
+    const inputProps1 = {
+      placeholder: 'Type an Engineer 1 ...',
+      value: data.engineer_1,
+      name: "engineer_1",
+      onChange: handleChangeNewEngineer1
+    };
+
+    const inputProps2 = {
+      placeholder: 'Type an Engineer 2 ...',
+      value: data.engineer_2,
+      name: "engineer_2",
+      onChange: handleChangeNewEngineer2
+    };
+
+    const inputProps3 = {
+      placeholder: 'Type an Engineer 3 ...',
+      value: data.engineer_3,
+      name: "engineer_3",
+      onChange: handleChangeNewEngineer3
+    };
 
     return (
       <Modal isOpen={add} toggle={toggleAdd} className={'modal-success modal-lg'}>
@@ -212,7 +348,15 @@ class AddRequest extends Component {
                 Engineer 1
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChangeNew} name="engineer_1" value={data.engineer_1} required />
+                <Autosuggest
+                  suggestions={this.state.suggestions1}
+                  onSuggestionsFetchRequested={this.onSuggestionsFetchRequested1}
+                  onSuggestionsClearRequested={this.onSuggestionsClearRequested1}
+                  getSuggestionValue={this.getSuggestionValue}
+                  renderSuggestion={this.renderSuggestion}
+                  inputProps={inputProps1}
+                  renderInputComponent={this.renderInputComponent}
+                />
               </Col>
             </FormGroup>
 
@@ -221,7 +365,15 @@ class AddRequest extends Component {
                 Engineer 2
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChangeNew} name="engineer_2" value={data.engineer_2} required />
+                <Autosuggest
+                  suggestions={this.state.suggestions2}
+                  onSuggestionsFetchRequested={this.onSuggestionsFetchRequested2}
+                  onSuggestionsClearRequested={this.onSuggestionsClearRequested2}
+                  getSuggestionValue={this.getSuggestionValue}
+                  renderSuggestion={this.renderSuggestion}
+                  inputProps={inputProps2}
+                  renderInputComponent={this.renderInputComponent}
+                />
               </Col>
             </FormGroup>
 
@@ -230,7 +382,15 @@ class AddRequest extends Component {
                 Engineer 3
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChangeNew} name="engineer_3" value={data.engineer_3} required />
+                <Autosuggest
+                  suggestions={this.state.suggestions3}
+                  onSuggestionsFetchRequested={this.onSuggestionsFetchRequested3}
+                  onSuggestionsClearRequested={this.onSuggestionsClearRequested3}
+                  getSuggestionValue={this.getSuggestionValue}
+                  renderSuggestion={this.renderSuggestion}
+                  inputProps={inputProps3}
+                  renderInputComponent={this.renderInputComponent}
+                />
               </Col>
             </FormGroup>
 

@@ -200,6 +200,33 @@ class Calibration extends Component {
     })
   }
 
+  handleChangeNewEngineer1 = (event, { newValue }) => {
+    this.setState({
+      new: {
+        ...this.state.new,
+        engineer_1: newValue
+      }
+    })
+  }
+
+  handleChangeNewEngineer2 = (event, { newValue }) => {
+    this.setState({
+      new: {
+        ...this.state.new,
+        engineer_2: newValue
+      }
+    })
+  }
+
+  handleChangeNewEngineer3 = (event, { newValue }) => {
+    this.setState({
+      new: {
+        ...this.state.new,
+        engineer_3: newValue
+      }
+    })
+  }
+
   handleChangeNewFile = (event) => {
     this.setState({
       new: {
@@ -366,7 +393,7 @@ class Calibration extends Component {
         },
         {
           label: 'Target Selesai',
-          field: 'start_target',
+          field: 'finished_target',
           sort: 'asc'
         },
         {
@@ -403,7 +430,7 @@ class Calibration extends Component {
           no: i + 1,
           id: items.id,
           device_name: items.device_name,
-          start_target: items.start_target,
+          finished_target: items.finished_target,
           remaining_time: Math.floor((new Date(items.finished_target) - new Date()) / (24 * 60 * 60 * 1000)),
           status: items.test_report === "" ? "On Progress" : "Finished",
           engineer: items.engineer_1,
@@ -457,7 +484,7 @@ class Calibration extends Component {
                   entriesOptions={[10, 50, 100, 1000]}
                 />
 
-                <AddRequest add={this.state.add} data={this.state.new} handleAdd={this.handleAdd} handleChangeNew={this.handleChangeNew} handleChangeNewFile={this.handleChangeNewFile} loader={this.state.loader} toggleAdd={this.toggleAdd} />
+                <AddRequest add={this.state.add} data={this.state.new} handleAdd={this.handleAdd} handleChangeNew={this.handleChangeNew} handleChangeNewFile={this.handleChangeNewFile} loader={this.state.loader} toggleAdd={this.toggleAdd} handleChangeNewEngineer1={this.handleChangeNewEngineer1} handleChangeNewEngineer2={this.handleChangeNewEngineer2} handleChangeNewEngineer3={this.handleChangeNewEngineer3} />
 
                 <ViewRequest data={this.state.focus} getData={this.getData} id={this.state.id} toggleView={this.toggleView} view={this.state.view} />
 
