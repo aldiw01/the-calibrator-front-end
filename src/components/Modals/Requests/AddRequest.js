@@ -32,14 +32,6 @@ class AddRequest extends Component {
         registered: '',
         updated: ''
       }],
-      // data: [{
-      //   name: 'C',
-      //   year: 1972
-      // },
-      // {
-      //   name: 'Elm',
-      //   year: 2012
-      // }],
       dropdown1: false,
       dropdown2: false,
       suggestions1: [],
@@ -145,6 +137,10 @@ class AddRequest extends Component {
   );
 
   renderInputComponent = inputProps => (
+    <Input {...inputProps} />
+  );
+
+  renderInputComponentRequired = inputProps => (
     <Input {...inputProps} required />
   );
 
@@ -187,7 +183,7 @@ class AddRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                No SPK
+                No SPK *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChangeNew} name="id" value={data.id} className="text-uppercase" required />
@@ -196,7 +192,7 @@ class AddRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Laboratorium Penguji
+                Laboratorium Penguji *
                         </Col>
               <Col xs="12" md="9">
                 <ButtonDropdown isOpen={this.state.dropdown1} toggle={this.toggle1} name="dropdown1" className="w-100">
@@ -216,16 +212,26 @@ class AddRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Tipe Pengujian
+                Tipe Pengujian *
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChangeNew} name="request_type" value={data.request_type} required />
+                <ButtonDropdown isOpen={this.state.dropdown2} toggle={this.toggle2} name="dropdown2" className="w-100">
+                  <DropdownToggle className="text-left">
+                    {data.request_type === "" ? "Pilih Tipe Pengujian ..." : data.request_type}
+                  </DropdownToggle>
+                  <DropdownMenu style={{ width: "100%", overflow: "auto" }}>
+                    <DropdownItem onClick={handleChangeNew} name="request_type" value="QA" >QA - Quality Assurance</DropdownItem>
+                    <DropdownItem onClick={handleChangeNew} name="request_type" value="TA" >TA - Test Approval</DropdownItem>
+                    <DropdownItem onClick={handleChangeNew} name="request_type" value="VT" >VT - Voluntary Test</DropdownItem>
+                    <DropdownItem onClick={handleChangeNew} name="request_type" value="CAL" >CAL - Calibration</DropdownItem>
+                  </DropdownMenu>
+                </ButtonDropdown>
               </Col>
             </FormGroup>
 
             <FormGroup row>
               <Col md="3">
-                Nama Alat
+                Nama Alat *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChangeNew} name="device_name" value={data.device_name} required />
@@ -234,7 +240,7 @@ class AddRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Merk
+                Merk *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChangeNew} name="manufacturer" value={data.manufacturer} required />
@@ -243,7 +249,7 @@ class AddRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Model
+                Model *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChangeNew} name="type" value={data.type} required />
@@ -255,7 +261,7 @@ class AddRequest extends Component {
                 Serial Number
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChangeNew} name="serial_number" value={data.serial_number} required />
+                <Input type="text" onChange={handleChangeNew} name="serial_number" value={data.serial_number} />
               </Col>
             </FormGroup>
 
@@ -264,7 +270,7 @@ class AddRequest extends Component {
                 Kapasitas
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChangeNew} name="capacity" value={data.capacity} required />
+                <Input type="text" onChange={handleChangeNew} name="capacity" value={data.capacity} />
               </Col>
             </FormGroup>
 
@@ -273,7 +279,7 @@ class AddRequest extends Component {
                 Made In
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChangeNew} name="made_in" value={data.made_in} required />
+                <Input type="text" onChange={handleChangeNew} name="made_in" value={data.made_in} />
               </Col>
             </FormGroup>
 
@@ -282,13 +288,13 @@ class AddRequest extends Component {
                 Referensi Pengujian
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChangeNew} name="test_reference" value={data.test_reference} required />
+                <Input type="text" onChange={handleChangeNew} name="test_reference" value={data.test_reference} />
               </Col>
             </FormGroup>
 
             <FormGroup row>
               <Col md="3">
-                Nama Perusahaan
+                Nama Perusahaan *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChangeNew} name="company_name" value={data.company_name} required />
@@ -297,7 +303,7 @@ class AddRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Alamat Perusahaan
+                Alamat Perusahaan *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChangeNew} name="company_address" value={data.company_address} required />
@@ -312,7 +318,7 @@ class AddRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Tanggal SPK
+                Tanggal SPK *
               </Col>
               <Col xs="12" md="9">
                 <Input type="date" onChange={handleChangeNew} name="created" value={data.created} required />
@@ -321,7 +327,7 @@ class AddRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Target Mulai Uji
+                Target Mulai Uji *
               </Col>
               <Col xs="12" md="9">
                 <Input type="date" onChange={handleChangeNew} name="start_target" value={data.start_target} required />
@@ -330,7 +336,7 @@ class AddRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Target Selesai Uji
+                Target Selesai Uji *
               </Col>
               <Col xs="12" md="9">
                 <Input type="date" onChange={handleChangeNew} name="finished_target" value={data.finished_target} required />
@@ -345,7 +351,7 @@ class AddRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Engineer 1
+                Engineer 1 *
               </Col>
               <Col xs="12" md="9">
                 <Autosuggest
@@ -355,7 +361,7 @@ class AddRequest extends Component {
                   getSuggestionValue={this.getSuggestionValue}
                   renderSuggestion={this.renderSuggestion}
                   inputProps={inputProps1}
-                  renderInputComponent={this.renderInputComponent}
+                  renderInputComponent={this.renderInputComponentRequired}
                 />
               </Col>
             </FormGroup>
@@ -391,6 +397,15 @@ class AddRequest extends Component {
                   inputProps={inputProps3}
                   renderInputComponent={this.renderInputComponent}
                 />
+              </Col>
+            </FormGroup>
+
+            <FormGroup row>
+              <Col>
+                <div className="w-100 py-2"></div>
+                <strong class="text-danger">
+                  * Required Element
+                </strong>
               </Col>
             </FormGroup>
 

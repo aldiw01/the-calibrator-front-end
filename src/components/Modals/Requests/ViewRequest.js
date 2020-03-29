@@ -211,11 +211,11 @@ class ViewRequest extends Component {
                 <div className="w-100 py-2"></div>
 
                 <Col xs="3">Mulai Uji</Col>
-                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(data.actual_start).toLocaleDateString("en-GB")}</Col>
+                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.actual_start ? new Date(data.actual_start).toLocaleDateString("en-GB") : "-"}</Col>
                 <div className="w-100 py-2"></div>
 
                 <Col xs="3">Selesai Uji</Col>
-                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(data.actual_finished).toLocaleDateString("en-GB")}</Col>
+                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.actual_finished ? new Date(data.actual_finished).toLocaleDateString("en-GB") : "-"}</Col>
                 <div className="w-100 py-2"></div>
 
                 <div className="w-100 py-2"></div>

@@ -191,6 +191,33 @@ class Calibration extends Component {
     })
   }
 
+  handleChangeEditEngineer1 = (event, { newValue }) => {
+    this.setState({
+      focus: {
+        ...this.state.focus,
+        engineer_1: newValue
+      }
+    })
+  }
+
+  handleChangeEditEngineer2 = (event, { newValue }) => {
+    this.setState({
+      focus: {
+        ...this.state.focus,
+        engineer_2: newValue
+      }
+    })
+  }
+
+  handleChangeEditEngineer3 = (event, { newValue }) => {
+    this.setState({
+      focus: {
+        ...this.state.focus,
+        engineer_3: newValue
+      }
+    })
+  }
+
   handleChangeNew = (event) => {
     this.setState({
       new: {
@@ -240,29 +267,29 @@ class Calibration extends Component {
     event.preventDefault();
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      const data = new FormData();
-      data.append('id', this.state.new.id);
-      data.append('lab', this.state.new.lab);
-      data.append('request_type', this.state.new.request_type);
-      data.append('device_name', this.state.new.device_name);
-      data.append('manufacturer', this.state.new.manufacturer);
-      data.append('type', this.state.new.type);
-      data.append('serial_number', this.state.new.serial_number);
-      data.append('capacity', this.state.new.capacity);
-      data.append('made_in', this.state.new.made_in);
-      data.append('test_reference', this.state.new.test_reference);
-      data.append('company_name', this.state.new.company_name);
-      data.append('company_address', this.state.new.company_address);
-      data.append('created', this.state.new.created);
-      data.append('start_target', this.state.new.start_target);
-      data.append('finished_target', this.state.new.finished_target);
-      data.append('actual_start', this.state.new.actual_start);
-      data.append('actual_finished', this.state.new.actual_finished);
-      data.append('engineer_1', this.state.new.engineer_1);
-      data.append('engineer_2', this.state.new.engineer_2);
-      data.append('engineer_3', this.state.new.engineer_3);
-      data.append('test_report', this.state.new.test_report);
-      axios.post(process.env.REACT_APP_API_PATH + '/cal_requests', data)
+      // const data = new FormData();
+      // data.append('id', this.state.new.id);
+      // data.append('lab', this.state.new.lab);
+      // data.append('request_type', this.state.new.request_type);
+      // data.append('device_name', this.state.new.device_name);
+      // data.append('manufacturer', this.state.new.manufacturer);
+      // data.append('type', this.state.new.type);
+      // data.append('serial_number', this.state.new.serial_number);
+      // data.append('capacity', this.state.new.capacity);
+      // data.append('made_in', this.state.new.made_in);
+      // data.append('test_reference', this.state.new.test_reference);
+      // data.append('company_name', this.state.new.company_name);
+      // data.append('company_address', this.state.new.company_address);
+      // data.append('created', this.state.new.created);
+      // data.append('start_target', this.state.new.start_target);
+      // data.append('finished_target', this.state.new.finished_target);
+      // data.append('actual_start', this.state.new.actual_start);
+      // data.append('actual_finished', this.state.new.actual_finished);
+      // data.append('engineer_1', this.state.new.engineer_1);
+      // data.append('engineer_2', this.state.new.engineer_2);
+      // data.append('engineer_3', this.state.new.engineer_3);
+      // data.append('test_report', this.state.new.test_report);
+      axios.post(process.env.REACT_APP_API_PATH + '/cal_requests', this.state.new)
         .then(res => {
           this.setState({
             add: !this.state.add,
@@ -488,7 +515,7 @@ class Calibration extends Component {
 
                 <ViewRequest data={this.state.focus} getData={this.getData} id={this.state.id} toggleView={this.toggleView} view={this.state.view} />
 
-                <EditRequest edit={this.state.edit} data={this.state.focus} id={this.state.id} handleEdit={this.handleEdit} handleChange={this.handleChange} loader={this.state.loader} toggleEdit={this.toggleEdit} />
+                <EditRequest edit={this.state.edit} data={this.state.focus} id={this.state.id} handleChangeEditEngineer1={this.handleChangeEditEngineer1} handleChangeEditEngineer2={this.handleChangeEditEngineer2} handleChangeEditEngineer3={this.handleChangeEditEngineer3} handleEdit={this.handleEdit} handleChange={this.handleChange} loader={this.state.loader} toggleEdit={this.toggleEdit} />
 
                 <DeleteRequest _delete={this.state.delete} data={this.state.focus} id={this.state.id} handleDelete={this.handleDelete} loader={this.state.loader} toggleDelete={this.toggleDelete} />
 

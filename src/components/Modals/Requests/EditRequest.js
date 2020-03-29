@@ -78,7 +78,7 @@ class EditRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Nama Alat
+                Nama Alat *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChange} name="device_name" value={data.device_name} required />
@@ -87,7 +87,7 @@ class EditRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Merk
+                Merk *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChange} name="manufacturer" value={data.manufacturer} required />
@@ -96,7 +96,7 @@ class EditRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Model
+                Model *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChange} name="type" value={data.type} required />
@@ -108,7 +108,7 @@ class EditRequest extends Component {
                 Serial Number
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChange} name="serial_number" value={data.serial_number} required />
+                <Input type="text" onChange={handleChange} name="serial_number" value={data.serial_number} />
               </Col>
             </FormGroup>
 
@@ -117,7 +117,7 @@ class EditRequest extends Component {
                 Kapasitas
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChange} name="capacity" value={data.capacity} required />
+                <Input type="text" onChange={handleChange} name="capacity" value={data.capacity} />
               </Col>
             </FormGroup>
 
@@ -126,7 +126,7 @@ class EditRequest extends Component {
                 Made In
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChange} name="made_in" value={data.made_in} required />
+                <Input type="text" onChange={handleChange} name="made_in" value={data.made_in} />
               </Col>
             </FormGroup>
 
@@ -135,13 +135,13 @@ class EditRequest extends Component {
                 Referensi Pengujian
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChange} name="test_reference" value={data.test_reference} required />
+                <Input type="text" onChange={handleChange} name="test_reference" value={data.test_reference} />
               </Col>
             </FormGroup>
 
             <FormGroup row>
               <Col md="3">
-                Nama Perusahaan
+                Nama Perusahaan *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChange} name="company_name" value={data.company_name} required />
@@ -150,7 +150,7 @@ class EditRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Alamat Perusahaan
+                Alamat Perusahaan *
               </Col>
               <Col xs="12" md="9">
                 <Input type="text" onChange={handleChange} name="company_address" value={data.company_address} required />
@@ -165,7 +165,7 @@ class EditRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Tanggal SPK
+                Tanggal SPK *
               </Col>
               <Col xs="12" md="9">
                 <Input type="date" onChange={handleChange} name="created" value={data.created} required />
@@ -174,7 +174,7 @@ class EditRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Target Mulai Uji
+                Target Mulai Uji *
               </Col>
               <Col xs="12" md="9">
                 <Input type="date" onChange={handleChange} name="start_target" value={data.start_target} required />
@@ -183,7 +183,7 @@ class EditRequest extends Component {
 
             <FormGroup row>
               <Col md="3">
-                Target Selesai Uji
+                Target Selesai Uji *
               </Col>
               <Col xs="12" md="9">
                 <Input type="date" onChange={handleChange} name="finished_target" value={data.finished_target} required />
@@ -195,7 +195,7 @@ class EditRequest extends Component {
                 Mulai Uji
               </Col>
               <Col xs="12" md="9">
-                <Input type="date" onChange={handleChange} name="actual_start" value={data.actual_start} required />
+                <Input type="date" onChange={handleChange} name="actual_start" value={data.actual_start} />
               </Col>
             </FormGroup>
 
@@ -204,7 +204,7 @@ class EditRequest extends Component {
                 Selesai Uji
               </Col>
               <Col xs="12" md="9">
-                <Input type="date" onChange={handleChange} name="actual_finished" value={data.actual_finished} required />
+                <Input type="date" onChange={handleChange} name="actual_finished" value={data.actual_finished} />
               </Col>
             </FormGroup>
 
@@ -219,7 +219,7 @@ class EditRequest extends Component {
                 Engineer 1
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChange} name="engineer_1" value={data.engineer_1} required />
+                <Input type="text" onChange={handleChange} name="engineer_1" value={data.engineer_1} disabled />
               </Col>
             </FormGroup>
 
@@ -228,7 +228,7 @@ class EditRequest extends Component {
                 Engineer 2
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChange} name="engineer_2" value={data.engineer_2} required />
+                <Input type="text" onChange={handleChange} name="engineer_2" value={data.engineer_2} disabled />
               </Col>
             </FormGroup>
 
@@ -237,7 +237,16 @@ class EditRequest extends Component {
                 Engineer 3
               </Col>
               <Col xs="12" md="9">
-                <Input type="text" onChange={handleChange} name="engineer_3" value={data.engineer_3} required />
+                <Input type="text" onChange={handleChange} name="engineer_3" value={data.engineer_3} disabled />
+              </Col>
+            </FormGroup>
+
+            <FormGroup row>
+              <Col>
+                <div className="w-100 py-2"></div>
+                <strong class="text-danger">
+                  * Required Element
+                </strong>
               </Col>
             </FormGroup>
 
