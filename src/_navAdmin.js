@@ -94,6 +94,33 @@ export default {
       ]
     },
     {
+      name: 'Test Report',
+      url: '/',
+      icon: 'icon-calendar',
+      children: [
+        {
+          name: 'Calibration',
+          url: '/requests/1/cal/certificate',
+          icon: 'icon-globe',
+        },
+        {
+          name: 'Quality Assurance',
+          url: '/requests/1/qa/certificate',
+          icon: 'icon-wrench',
+        },
+        {
+          name: 'Test Approval',
+          url: '/requests/1/ta/certificate',
+          icon: 'icon-feed',
+        },
+        {
+          name: 'Voluntary Test',
+          url: '/requests/1/vt/certificate',
+          icon: 'icon-diamond',
+        }
+      ]
+    },
+    {
       name: 'Registrasi',
       url: '/register',
       icon: 'icon-user-follow'
