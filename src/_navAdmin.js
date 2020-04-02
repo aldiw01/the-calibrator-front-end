@@ -94,8 +94,62 @@ export default {
       ]
     },
     {
+      name: 'Dokumen Mutu',
+      url: '/procedures',
+      icon: 'icon-notebook',
+      children: [
+        {
+          name: 'Panduan Mutu',
+          url: '/procedures/pm',
+          icon: 'icon-map',
+        },
+        {
+          name: 'Prosedur',
+          url: '/procedures/general',
+          icon: 'icon-cursor-move',
+        }
+      ]
+    },
+    {
+      name: 'Instruksi Kerja',
+      url: '/wi',
+      icon: 'icon-cursor',
+      children: [
+        {
+          name: 'All Lab',
+          url: '/wi',
+          icon: 'icon-globe',
+        },
+        {
+          name: 'Lab Kalibrasi',
+          url: '/wi/kal',
+          icon: 'icon-wrench',
+        },
+        {
+          name: 'Lab Transmisi',
+          url: '/wi/tra',
+          icon: 'icon-feed',
+        },
+        {
+          name: 'Lab Kabel',
+          url: '/wi/kab',
+          icon: 'icon-diamond',
+        },
+        {
+          name: 'Lab Device',
+          url: '/wi/dev',
+          icon: 'icon-screen-desktop',
+        },
+        {
+          name: 'Lab Energi',
+          url: '/wi/ene',
+          icon: 'icon-energy',
+        }
+      ]
+    },
+    {
       name: 'Test Report',
-      url: '/',
+      url: '/requests',
       icon: 'icon-calendar',
       children: [
         {

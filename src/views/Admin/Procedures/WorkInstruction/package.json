@@ -1,0 +1,6 @@
+{
+  "name": "WorkInstruction",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./WorkInstruction.js"
+}

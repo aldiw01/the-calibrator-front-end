@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Col, Row, Button } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 import axios from 'axios';
 import AuthService from 'server/AuthService';
 import "assets/css/certificate.css";
 import telkom from 'assets/img/telkom.png';
-import LP from 'assets/img/LP.png';
+import LK from 'assets/img/LK.png';
 
 class QualityAssurance extends Component {
 
@@ -109,8 +109,6 @@ class QualityAssurance extends Component {
   }
 
   render() {
-    const role = this.Auth.getProfile().role
-    const lab = this.Auth.getProfile().lab
     const margin = {
       margin: "50px 75px"
     }
@@ -144,7 +142,7 @@ class QualityAssurance extends Component {
             </Row>
           </Col>
           <Col xs="3 my-auto">
-            <img src={LP} alt="LP-490-IDN" className="w-100" />
+            <img src={LK} alt="LK-002-IDN" className="w-100" />
           </Col>
         </Row>
 
@@ -212,21 +210,29 @@ class QualityAssurance extends Component {
                   <u>MERK / TIPE</u><br />
                   <em>Brand / Type</em>
                 </Col>
-                <Col xs="9 my-auto">
+                <Col xs="4 my-auto">
                   : IWATSU/ VOAC 92
                 </Col>
+                <Col xs="5"></Col>
 
                 <Col xs="3">
                   <u>NOMOR SERI</u><br />
                   <em>Serial No.</em>
                 </Col>
-                <Col xs="9 my-auto">
+                <Col xs="4 my-auto">
                   : 00021701
                 </Col>
+                <Col xs="5"></Col>
 
               </Row>
             </Col>
           </Row>
+
+          <div className="position-absolute border" style={{ right: "75px", height: "240px", width: "360px", top: "480px" }}>
+            <div className="h-100">
+              <img class="w-100 h-100 p-2" src="http://localhost:8900/api/uploads/devices/test.jpg" alt="Calibration" />
+            </div>
+          </div>
 
           {/* Laboratory Activity’s Data */}
           <Row className="mt-2">
@@ -238,25 +244,28 @@ class QualityAssurance extends Component {
                   <u>SUHU</u><br />
                   <em>Ambient Temperature</em>
                 </Col>
-                <Col xs="9 my-auto">
+                <Col xs="4 my-auto">
                   : ( 23 ± 2 ) °C
                 </Col>
+                <Col xs="5"></Col>
 
                 <Col xs="3">
                   <u>KELEMBABAN</u><br />
                   <em>Relative Humidity</em>
                 </Col>
-                <Col xs="9 my-auto">
+                <Col xs="4 my-auto">
                   : 40% ~ 70%
                 </Col>
+                <Col xs="5"></Col>
 
                 <Col xs="3">
                   <u>TANGGAL KALIBRASI</u><br />
                   <em>Date Calibrated</em>
                 </Col>
-                <Col xs="9 my-auto">
+                <Col xs="4 my-auto">
                   : 29 MARET 2020
                 </Col>
+                <Col xs="5"></Col>
 
               </Row>
             </Col>

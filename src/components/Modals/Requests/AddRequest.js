@@ -403,7 +403,7 @@ class AddRequest extends Component {
             <FormGroup row>
               <Col>
                 <div className="w-100 py-2"></div>
-                <strong class="text-danger">
+                <strong className="text-danger">
                   * Required Element
                 </strong>
               </Col>

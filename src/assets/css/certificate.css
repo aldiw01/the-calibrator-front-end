@@ -1,4 +1,62 @@
 body {
   background-color: white;
-  font-size: 0.95rem;
+  font-size: 1rem;
+}
+
+.page-header, .page-header-space {
+  height: 162px;
+  margin-bottom: 0.5rem;
+}
+
+.page-footer, .page-footer-space {
+  height: 100px;
+}
+
+.page-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+.page-footer-number:after {
+  content: counter(page)
+}
+
+.page-header {
+  position: fixed;
+  top: 0mm;
+  width: 100%;
+}
+
+.page {
+  page-break-after: always;
+}
+
+@media print {
+  @page {
+    size: A4 potrait;
+    margin: 13mm 13mm 13mm 20mm;
+  }
+  
+  thead {
+    display: table-header-group;
+  } 
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  .content-block, p {
+    page-break-inside: avoid;
+  }
+
+  #pageFooter {
+    display: table-footer-group;
+    counter-increment: page;
+  }
+  
+  #pageFooter:after {
+    content: "Page " counter(page) " of " counter(pages) ;
+  }
+  
 }

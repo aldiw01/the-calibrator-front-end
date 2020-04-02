@@ -17,6 +17,11 @@ const Certificates = React.lazy(() => import('./views/Admin/Certificates'));
 const Requests = React.lazy(() => import('./views/Admin/Requests/Calibration'));
 // Schedules
 const Schedules = React.lazy(() => import('./views/Admin/Schedules'));
+// Procedures
+const PanduanMutu = React.lazy(() => import('./views/Admin/Procedures/PanduanMutu'));
+const General = React.lazy(() => import('./views/Admin/Procedures/General'));
+// Work Instruction
+const WorkInstruction = React.lazy(() => import('./views/Admin/Procedures/WorkInstruction'));
 
 const Profile = React.lazy(() => import('./views/Profile/Profile'));
 const Register = React.lazy(() => import('./views/Pages/Register'));
@@ -41,11 +46,22 @@ const routes = [
   { path: '/requests', exact: true, name: 'Requests', component: Requests },
 
   { path: '/schedules', exact: true, name: 'Schedules', component: Schedules },
-  { path: '/schedules/cal', name: 'Calibration', component: Schedules },
-  { path: '/schedules/tra', name: 'Transmission', component: Schedules },
   { path: '/schedules/cab', name: 'Cable', component: Schedules },
+  { path: '/schedules/cal', name: 'Calibration', component: Schedules },
   { path: '/schedules/cpe', name: 'Device', component: Schedules },
   { path: '/schedules/ene', name: 'Energy', component: Schedules },
+  { path: '/schedules/tra', name: 'Transmission', component: Schedules },
+
+  { path: '/procedures', exact: true, name: 'Procedures', component: PanduanMutu },
+  { path: '/procedures/pm', name: 'Panduan Mutu', component: PanduanMutu },
+  { path: '/procedures/general', name: 'General', component: General },
+
+  { path: '/wi', exact: true, name: 'Work Instruction', component: WorkInstruction },
+  { path: '/wi/kab', name: 'Cable', component: WorkInstruction },
+  { path: '/wi/kal', name: 'Calibration', component: WorkInstruction },
+  { path: '/wi/dev', name: 'Device', component: WorkInstruction },
+  { path: '/wi/ene', name: 'Energy', component: WorkInstruction },
+  { path: '/wi/tra', name: 'Transmission', component: WorkInstruction },
 
   { path: '/certificates', name: 'Certificates', component: Certificates },
   { path: '/profile', name: 'Profile', component: Profile },

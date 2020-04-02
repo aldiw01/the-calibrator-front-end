@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Col, Row, Button } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 import axios from 'axios';
 import AuthService from 'server/AuthService';
 import "assets/css/certificate.css";
 import telkom from 'assets/img/telkom.png';
-import LP from 'assets/img/LP.png';
+import LK from 'assets/img/LK.png';
 
 class VoluntaryTest extends Component {
 
@@ -109,21 +109,20 @@ class VoluntaryTest extends Component {
   }
 
   render() {
-    const role = this.Auth.getProfile().role
-    const lab = this.Auth.getProfile().lab
     const margin = {
       margin: "50px 75px"
     }
+    // const margin = []
 
     return (
       <div className="animated fadeIn bg-white" style={margin}>
 
         {/* Header Section */}
-        <Row className="mb-3">
+        <Row className="border mb-2" style={{ padding: "0 15px", margin: "0 -15px" }}>
           <Col xs="3 my-auto">
             <img src={telkom} alt="Telkom Indonesia" className="w-100" />
           </Col>
-          <Col xs="6 my-auto">
+          <Col xs="6 my-auto py-3 border-left border-right">
             <div className="text-center">
               <strong className="text-uppercase">
                 <h4 className="font-weight-bold">
@@ -144,12 +143,12 @@ class VoluntaryTest extends Component {
             </Row>
           </Col>
           <Col xs="3 my-auto">
-            <img src={LP} alt="LP-490-IDN" className="w-100" />
+            <img src={LK} alt="LK-002-IDN" className="w-100" />
           </Col>
         </Row>
 
         {/* Body Section */}
-        <div style={{ borderTop: "2px solid" }}>
+        <div className="border mb-2 content-block" style={{ padding: "0 15px", margin: "0 -15px", height: "1180px" }}>
 
           {/* Title */}
           <Row className="mt-3">
@@ -212,21 +211,29 @@ class VoluntaryTest extends Component {
                   <u>MERK / TIPE</u><br />
                   <em>Brand / Type</em>
                 </Col>
-                <Col xs="9 my-auto">
+                <Col xs="4 my-auto">
                   : IWATSU/ VOAC 92
                 </Col>
+                <Col xs="5"></Col>
 
                 <Col xs="3">
                   <u>NOMOR SERI</u><br />
                   <em>Serial No.</em>
                 </Col>
-                <Col xs="9 my-auto">
+                <Col xs="4 my-auto">
                   : 00021701
                 </Col>
+                <Col xs="5"></Col>
 
               </Row>
             </Col>
           </Row>
+
+          <div className="position-absolute border" style={{ right: "75px", height: "240px", width: "360px", top: "480px" }}>
+            <div className="h-100">
+              <img class="w-100 h-100 p-2" src="http://localhost:8900/api/uploads/devices/test.jpg" alt="Calibration" />
+            </div>
+          </div>
 
           {/* Laboratory Activity’s Data */}
           <Row className="mt-2">
@@ -238,25 +245,28 @@ class VoluntaryTest extends Component {
                   <u>SUHU</u><br />
                   <em>Ambient Temperature</em>
                 </Col>
-                <Col xs="9 my-auto">
+                <Col xs="4 my-auto">
                   : ( 23 ± 2 ) °C
                 </Col>
+                <Col xs="5"></Col>
 
                 <Col xs="3">
                   <u>KELEMBABAN</u><br />
                   <em>Relative Humidity</em>
                 </Col>
-                <Col xs="9 my-auto">
+                <Col xs="4 my-auto">
                   : 40% ~ 70%
                 </Col>
+                <Col xs="5"></Col>
 
                 <Col xs="3">
                   <u>TANGGAL KALIBRASI</u><br />
                   <em>Date Calibrated</em>
                 </Col>
-                <Col xs="9 my-auto">
+                <Col xs="4 my-auto">
                   : 29 MARET 2020
                 </Col>
+                <Col xs="5"></Col>
 
               </Row>
             </Col>
@@ -296,7 +306,201 @@ class VoluntaryTest extends Component {
               <strong><u>KESIMPULAN:</u></strong><br />
               <em>Conclusion</em>
             </Col>
-            <Col>
+            <Col className="border" style={{ padding: "0 15px", margin: "0 15px" }}>
+              <Row>
+                <Col xs="8">
+                  Berdasarkan spesifikasi alat ukur <em><u>Multimeter Digital / IWATSU/ VOAC 92</u></em>
+                </Col>
+                <Col xs="4" className="border-left text-right">
+                  <strong>SEMUA ITEM INSPEC</strong>
+                </Col>
+              </Row>
+              <Row>
+                <Col xs="8">
+                  Refer to specification of <em><u>Multimeter Digital / IWATSU/ VOAC 92</u></em>
+                </Col>
+                <Col xs="4" className="border-left text-right">
+                  <strong>ALL ITEM INSPEC</strong>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+
+          {/* Method of Calibration */}
+          <Row className="my-2">
+            <Col xs="12" className="text-center">
+              Bandung, 17 September 2019<br />
+              Signed for and on behalf of TELKOM DDS<br />
+              <br />
+              <br />
+              <br />
+              <br />
+              <strong><u>YUSRIL SINI</u></strong><br />
+              SM INFRASTRUCTURE ASSURANCE
+            </Col>
+          </Row>
+        </div>
+
+        {/* Body Section */}
+        <div className="border mb-2 content-block" style={{ padding: "0 15px", margin: "0 -15px", height: "1180px" }}>
+
+          {/* Title */}
+          <Row className="mt-3">
+            <Col xs="3"></Col>
+            <Col xs="6" className="text-center">
+              <h4 className="font-weight-bold mb-0">
+                <u>SERTIFIKAT KALIBRASI</u>
+              </h4>
+              <h5>
+                <em>CALIBRATION CERTIFICATE</em>
+              </h5>
+            </Col>
+            <Col xs="3" className="p-0">
+              <u>NOMOR: 067/KAL/2019</u><br />
+              <em>No.</em>
+            </Col>
+          </Row>
+
+          {/* Consumer Data */}
+          <Row className="mt-2">
+            <Col xs="12">
+              <strong>DATA PEMAKAI </strong><em>(Consumer Data)</em>
+              <Row className="ml-3">
+
+                <Col xs="3">
+                  <u>NAMA / COMPANY</u><br />
+                  <em>Name</em>
+                </Col>
+                <Col xs="9 my-auto">
+                  : PT. TELEKOMUNIKASI INDONESIA, TBK – TELKOM DDS
+                </Col>
+
+                <Col xs="3">
+                  <u>ALAMAT</u><br />
+                  <em>Address</em>
+                </Col>
+                <Col xs="9 my-auto">
+                  : JL. GEGERKALONG HILIR NO. 47 – BANDUNG 40152
+                </Col>
+
+              </Row>
+            </Col>
+          </Row>
+
+          {/* Test Measurement’s Data */}
+          <Row className="mt-2">
+            <Col xs="12">
+              <strong>DATA ALAT UKUR </strong><em>(Test Measurement’s Data)</em>
+              <Row className="ml-3">
+
+                <Col xs="3">
+                  <u>NAMA ALAT UKUR</u><br />
+                  <em>Name of Test Measurements</em>
+                </Col>
+                <Col xs="9 my-auto">
+                  : DIGITAL MULTIMETER (161/CAL)
+                </Col>
+
+                <Col xs="3">
+                  <u>MERK / TIPE</u><br />
+                  <em>Brand / Type</em>
+                </Col>
+                <Col xs="4 my-auto">
+                  : IWATSU/ VOAC 92
+                </Col>
+                <Col xs="5"></Col>
+
+                <Col xs="3">
+                  <u>NOMOR SERI</u><br />
+                  <em>Serial No.</em>
+                </Col>
+                <Col xs="4 my-auto">
+                  : 00021701
+                </Col>
+                <Col xs="5"></Col>
+
+              </Row>
+            </Col>
+          </Row>
+
+          <div className="position-absolute border" style={{ right: "75px", height: "240px", width: "360px", top: "480px" }}>
+            <div className="h-100">
+              <img class="w-100 h-100 p-2" src="http://localhost:8900/api/uploads/devices/test.jpg" alt="Calibration" />
+            </div>
+          </div>
+
+          {/* Laboratory Activity’s Data */}
+          <Row className="mt-2">
+            <Col xs="12">
+              <strong>DATA KEGIATAN LABORATORIUM </strong><em>(Laboratory Activity’s Data)</em>
+              <Row className="ml-3">
+
+                <Col xs="3">
+                  <u>SUHU</u><br />
+                  <em>Ambient Temperature</em>
+                </Col>
+                <Col xs="4 my-auto">
+                  : ( 23 ± 2 ) °C
+                </Col>
+                <Col xs="5"></Col>
+
+                <Col xs="3">
+                  <u>KELEMBABAN</u><br />
+                  <em>Relative Humidity</em>
+                </Col>
+                <Col xs="4 my-auto">
+                  : 40% ~ 70%
+                </Col>
+                <Col xs="5"></Col>
+
+                <Col xs="3">
+                  <u>TANGGAL KALIBRASI</u><br />
+                  <em>Date Calibrated</em>
+                </Col>
+                <Col xs="4 my-auto">
+                  : 29 MARET 2020
+                </Col>
+                <Col xs="5"></Col>
+
+              </Row>
+            </Col>
+          </Row>
+
+          {/* Method of Calibration */}
+          <Row className="mt-2">
+            <Col xs="12">
+              <strong>METODE KALIBRASI </strong><em>(Method of Calibration)</em><br />
+              Kalibrasi dilakukan berdasarkan prosedur IAS/I/KAL/004 dengan komparasi terhadap Alat Kalibrator (lihat halaman 2).<br />
+              <em>The calibration was carried out based on the IAS/I/KAL/004 procedure by comparison against the following Calibrator (see page 2).</em>
+            </Col>
+          </Row>
+
+          {/* Notes */}
+          <Row className="mt-2">
+            <Col xs="12">
+              <strong><u>CATATAN</u></strong> <em>(Notes):</em>&emsp;
+              Koreksi = Nilai Standar (N<sub>STD</sub>) – Nilai Unit Under Test (N<sub>UUT</sub>)
+            </Col>
+          </Row>
+
+          {/* General Statement */}
+          <Row className="mt-2">
+            <Col xs="12">
+              <strong>PERNYATAAN UMUM </strong><em>(General Statement)</em><br />
+              <u>Ketidakpastian yang dilaporkan berdasarkan pada ketidakpastian standar dikalikan faktor cakupan k = 2, dengan tingkat kepercayaan sekitar 95%. Perhitungan ketidakpastian telah sesuai dengan persyaratan yang ditentukan oleh Komite Akreditasi Nasional (KAN).</u><br />
+              <em>The reported uncertainty is based on a standard uncertainty multiplied by a coverage factor k = 2, with a confidence level approximately 95%. The uncertainty evaluation has been carried out in accordance with Komite Akreditasi Nasional (KAN) requirements.</em><br />
+              <u>Sertifikat ini dikeluarkan sesuai persyaratan KAN, peralatan kalibrasi telah tertelusur ke sistem Satuan Internasional atau International System of Units (SI) (Systeme international d’unites) melalui Lab. Kalibrasi TELKOM MSC Cibinong (LK-016-IDN).</u><br />
+              <em>This certificate is issued in accordance with laboratory accreditation requirements of the KAN, calibration equipment have been traceable to the international System of Units (SI) (Systeme international d’unites) through Calibration Laboratory of TELKOM MSC Cibinong (LK-016-IDN).</em>
+            </Col>
+          </Row>
+
+          {/* Conclusion */}
+          <Row className="mt-2">
+            <Col xs="12">
+              <strong><u>KESIMPULAN:</u></strong><br />
+              <em>Conclusion</em>
+            </Col>
+            <Col className="border" style={{ padding: "0 15px", margin: "0 15px" }}>
               <Row>
                 <Col xs="8">
                   Berdasarkan spesifikasi alat ukur <em><u>Multimeter Digital / IWATSU/ VOAC 92</u></em>
@@ -332,19 +536,19 @@ class VoluntaryTest extends Component {
         </div>
 
         {/* Footer Section */}
-        <div>
+        <footer className="border" style={{ padding: "0 15px", margin: "0 -15px" }}>
           {/* Page Number */}
-          <Row className="mt-2" style={{ borderTop: "2px solid" }}>
+          <Row>
             <Col xs="6" className="text-left">
               FILE: 067-kal-19
             </Col>
-            <Col sx="6" className="text-right">
-              Page 1 of 3
+            <Col sx="6" className="text-right" id="pageFooter">
+              Page{` `}
             </Col>
           </Row>
 
           {/* Disclaimer */}
-          <Row className="mt-2 border-top border-bottom">
+          <Row className="border-top border-bottom">
             <Col xs="12" className="text-center">
               <strong><u>Dilarang memperbanyak laporan ini tanpa izin dari Laboratorium Quality Assurance – DDS – TELKOM</u></strong><br />
               <em>Do not copy this report without permission in writing from Quality Assurance Laboratory – DDS – TELKOM</em>
@@ -352,13 +556,48 @@ class VoluntaryTest extends Component {
           </Row>
 
           {/* Form Number */}
-          <Row className="mt-2">
+          <Row>
             <Col xs="12" className="text-left">
               <strong>TLKM06/F/007 Versi 01</strong>
             </Col>
           </Row>
 
-        </div>
+        </footer>
+
+        <br />
+        {/* Header Section */}
+        <Row className="border mb-2" style={{ padding: "0 15px", margin: "0 -15px" }}>
+          <Col xs="3 my-auto">
+            <img src={telkom} alt="Telkom Indonesia" className="w-100" />
+          </Col>
+          <Col xs="6 my-auto py-3 border-left border-right">
+            <div className="text-center">
+              <strong className="text-uppercase">
+                <h4 className="font-weight-bold">
+                  Divisi Digital Service - Telkom
+                </h4>
+                Infrastructure Assurance<br />
+                Laboratorium Quality Assurance<br />
+              </strong>
+              Jalan Gegerkalong Hilir No. 47 Bandung 40152 INDONESIA
+            </div>
+            <Row>
+              <Col xs="5">
+                Phone: 62-22-4571050
+              </Col>
+              <Col xs="7" className="p-0">
+                Facsimile: 62-22-2013505 or 2014669
+              </Col>
+            </Row>
+          </Col>
+          <Col xs="3 my-auto">
+            <img src={LK} alt="LK-002-IDN" className="w-100" />
+          </Col>
+        </Row>
+
+        {/* Body Section */}
+        <div style={{ height: "1180px" }}></div>
+
       </div>
     );
   }

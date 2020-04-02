@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Col, Row, Button } from 'reactstrap';
+import { Col, Row } from 'reactstrap';
 import axios from 'axios';
 import AuthService from 'server/AuthService';
 import "assets/css/certificate.css";
@@ -109,8 +109,6 @@ class TestApproval extends Component {
   }
 
   render() {
-    const role = this.Auth.getProfile().role
-    const lab = this.Auth.getProfile().lab
     const margin = {
       margin: "50px 75px"
     }
