@@ -15,6 +15,7 @@ const D_Table = React.lazy(() => import('./views/Admin/Devices/Table'));
 const Certificates = React.lazy(() => import('./views/Admin/Certificates'));
 // SPK
 const Requests = React.lazy(() => import('./views/Admin/Requests/Calibration'));
+const RequestContent = React.lazy(() => import('./views/Admin/Requests/Content/RequestContent'));
 // Schedules
 const Schedules = React.lazy(() => import('./views/Admin/Schedules'));
 // Procedures
@@ -44,6 +45,7 @@ const routes = [
   { path: '/devices/table/:lab/:type/:status', exact: true, name: 'Table', component: D_Table },
 
   { path: '/requests', exact: true, name: 'Requests', component: Requests },
+  { path: '/requests/content/:id', name: 'Content', component: RequestContent },
 
   { path: '/schedules', exact: true, name: 'Schedules', component: Schedules },
   { path: '/schedules/cab', name: 'Cable', component: Schedules },

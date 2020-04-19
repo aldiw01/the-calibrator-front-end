@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, ButtonDropdown, Col, DropdownItem, DropdownMenu, DropdownToggle, Form, FormGroup, Input, Label, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
+import { Button, ButtonDropdown, Col, DropdownItem, DropdownMenu, DropdownToggle, Form, FormGroup, Input, Modal, ModalBody, ModalFooter, ModalHeader } from 'reactstrap';
 import Spinner from 'react-spinkit';
 import Autosuggest from 'react-autosuggest';
 import axios from 'axios';
@@ -146,7 +146,7 @@ class AddRequest extends Component {
 
   render() {
 
-    const { add, data, handleAdd, handleChangeNew, handleChangeNewEngineer1, handleChangeNewEngineer2, handleChangeNewEngineer3, handleChangeNewFile, loader, toggleAdd } = this.props;
+    const { add, data, handleAdd, handleChangeNew, handleChangeNewEngineer1, handleChangeNewEngineer2, handleChangeNewEngineer3, loader, toggleAdd } = this.props;
 
     // Autosuggest will pass through all these props to the input.
     const inputProps1 = {
@@ -408,18 +408,6 @@ class AddRequest extends Component {
                 </strong>
               </Col>
             </FormGroup>
-
-            {/* <FormGroup row>
-              <Col md="3">
-                Dokumentasi
-              </Col>
-              <Col xs="12" md="9">
-                <div className="custom-file">
-                  <Input type="file" className="custom-file-input" name="documentation" onChange={handleChangeNewFile} required />
-                  <Label className="custom-file-label" htmlFor="customFileLang" style={{ overflow: "hidden" }} >{data.documentation ? data.documentation.name : ""} </Label>
-                </div>
-              </Col>
-            </FormGroup> */}
 
           </ModalBody>
           <ModalFooter>

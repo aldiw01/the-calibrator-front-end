@@ -5,6 +5,7 @@ import Certificate from 'components/Certificate/Devices';
 import Spinner from 'react-spinkit';
 import axios from 'axios';
 import AuthService from 'server/AuthService';
+import History from 'components/History/HistoryList';
 
 const propTypes = {
   data: PropTypes.object,
@@ -69,8 +70,23 @@ class ViewDevice extends Component {
             loader: false,
             documentation: ''
           })
+          // INSERT HISTORY INTO DATABASE
+          var request = {
+            reference_id: this.state.data[this.state.id].id,
+            test_engineer_id: this.Auth.getProfile().id,
+            cal_step_id: "DEV4",
+            message: this.state.message
+          }
+          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
+            .then(() => {
+              this.getData();
+            })
+            .catch(error => {
+              alert(error);
+              console.log(error);
+            });
+          ////////////////////////////////////////////////////////////////
           alert(res.data.message);
-          this.props.getData();
         })
         .catch(error => {
           alert(error);
@@ -92,8 +108,23 @@ class ViewDevice extends Component {
             loader: false,
             manual_file: ''
           })
+          // INSERT HISTORY INTO DATABASE
+          var request = {
+            reference_id: this.state.data[this.state.id].id,
+            test_engineer_id: this.Auth.getProfile().id,
+            cal_step_id: "DEV5",
+            message: this.state.message
+          }
+          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
+            .then(() => {
+              this.getData();
+            })
+            .catch(error => {
+              alert(error);
+              console.log(error);
+            });
+          ////////////////////////////////////////////////////////////////
           alert(res.data.message);
-          this.props.getData();
         })
         .catch(error => {
           alert(error);
@@ -115,8 +146,23 @@ class ViewDevice extends Component {
             loader: false,
             spec_file: ''
           })
+          // INSERT HISTORY INTO DATABASE
+          var request = {
+            reference_id: this.state.data[this.state.id].id,
+            test_engineer_id: this.Auth.getProfile().id,
+            cal_step_id: "DEV6",
+            message: this.state.message
+          }
+          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
+            .then(() => {
+              this.getData();
+            })
+            .catch(error => {
+              alert(error);
+              console.log(error);
+            });
+          ////////////////////////////////////////////////////////////////
           alert(res.data.message);
-          this.props.getData();
         })
         .catch(error => {
           alert(error);
@@ -158,7 +204,7 @@ class ViewDevice extends Component {
                 <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.serial_number}</Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="3">Status</Col>
-                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.defect_status === "1" ? "Rusak" : "Bagus"}</Col>
+                <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.defect_status === "0" ? "Bagus" : data.defect_status === "1" ? "Rusak" : "Tidak Dipakai"}</Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="3">Tanggal Kalibrasi</Col>
                 <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(data.calibration_date).toLocaleDateString("en-GB")}</Col>
@@ -177,6 +223,9 @@ class ViewDevice extends Component {
                 <div className="w-100 py-2"></div>
                 <Col xs="3">Pengecekan Antara</Col>
                 <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.test_interval}</Col>
+                <div className="w-100 py-2"></div>
+                <Col xs="3">Objek Kalibrasi</Col>
+                <Col xs="9" className="border-bottom mt-auto font-weight-bold" style={viewStyle}>{data.calibration_object === "1" ? "TRUE" : "FALSE"}</Col>
                 <div className="w-100 py-2"></div>
                 <Col xs="3">Metode Kalibrasi</Col>
                 <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{data.calibration_method}</Col>
@@ -213,6 +262,9 @@ class ViewDevice extends Component {
                 <div className="w-100 py-2"></div>
                 <Col xs="12">
                   <Certificate id={data.id} />
+                </Col>
+                <Col xs="12">
+                  <History id={data.id} />
                 </Col>
               </Row>
             </Col>

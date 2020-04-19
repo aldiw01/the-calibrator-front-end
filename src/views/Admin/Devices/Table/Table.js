@@ -48,6 +48,7 @@ class Table extends Component {
         supervisor: '',
         issue_date: '',
         test_interval: '',
+        calibration_object: '',
         calibration_method: '',
         manual_file: '',
         spec_file: '',
@@ -66,6 +67,7 @@ class Table extends Component {
         supervisor: '',
         issue_date: '',
         test_interval: '',
+        calibration_object: '',
         calibration_method: '',
         manual_file: '',
         spec_file: '',
@@ -99,7 +101,7 @@ class Table extends Component {
           console.log(error);
         });
     } else {
-      axios.get(process.env.REACT_APP_API_PATH + '/devices/calibration_status/' + this.props.match.params.lab)
+      axios.get(process.env.REACT_APP_API_PATH + '/devices/lab/' + this.props.match.params.lab)
         .then(res => {
           this.setState({ data: res.data });
           this.getCSVData();
@@ -124,6 +126,7 @@ class Table extends Component {
       { label: "AKHIR KALIBRASI", key: "due_date" },
       { label: "PER KALIBRASI", key: "calibration_period" },
       { label: "PENANGGUNG JAWAB", key: "supervisor" },
+      { label: "OBJEK KALIBRASI", key: "calibration_object" },
       { label: "METODE KALIBRASI", key: "calibration_method" },
       { label: "TANGGAL PEMBELIAN", key: "issue_date" }
     ];
@@ -138,12 +141,13 @@ class Table extends Component {
           manufacturer: items.manufacturer,
           model: items.model,
           serial_number: items.serial_number,
-          defect_status: items.defect_status === "1" ? "Rusak" : "Bagus",
+          defect_status: items.defect_status === "0" ? "Bagus" : items.defect_status === "1" ? "Rusak" : "Tidak Dipakai",
           manual: items.manual_file ? "Ada" : "Tidak Ada",
           calibration_date: items.calibration_date,
           due_date: items.due_date,
           calibration_period: items.calibration_period,
           supervisor: items.supervisor,
+          calibration_object: items.calibration_object,
           calibration_method: items.calibration_method,
           issue_date: items.issue_date
         });
@@ -175,8 +179,23 @@ class Table extends Component {
             loader: false,
             documentation: ''
           })
+          // INSERT HISTORY INTO DATABASE
+          var request = {
+            reference_id: this.state.data[this.state.id].id,
+            test_engineer_id: this.Auth.getProfile().id,
+            cal_step_id: "DEV2",
+            message: this.state.message
+          }
+          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
+            .then(() => {
+              this.getData();
+            })
+            .catch(error => {
+              alert(error);
+              console.log(error);
+            });
+          ////////////////////////////////////////////////////////////////
           alert(res.data.message);
-          this.getData();
         })
         .catch(error => {
           alert(error);
@@ -194,8 +213,23 @@ class Table extends Component {
             delete: !this.state.delete,
             loader: false
           })
+          // INSERT HISTORY INTO DATABASE
+          var request = {
+            reference_id: this.state.data[this.state.id].id,
+            test_engineer_id: this.Auth.getProfile().id,
+            cal_step_id: "DEV3",
+            message: this.state.message
+          }
+          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
+            .then(() => {
+              this.getData();
+            })
+            .catch(error => {
+              alert(error);
+              console.log(error);
+            });
+          ////////////////////////////////////////////////////////////////
           alert(res.data.message);
-          this.getData();
         })
         .catch(error => {
           alert(error);
@@ -292,15 +326,15 @@ class Table extends Component {
           manufacturer: items.manufacturer,
           model: items.model,
           due_date: items.due_date,
-          defect_status: items.defect_status === "1" ? "Rusak" : "Bagus",
-          actions: <React.Fragment>
+          defect_status: items.defect_status === "0" ? "Bagus" : items.defect_status === "1" ? "Rusak" : "Tidak Dipakai",
+          actions: <div className="d-flex">
             <button title="View Data" className="px-3 py-1 mr-1 btn btn-primary" onClick={() => toggleView(i)}><i className="fa fa-folder-open"></i></button>
             {role === "2" || lab === lab_param ?
               <React.Fragment>
                 <button title="Edit Data" className="px-3 py-1 mr-1 btn btn-warning" onClick={() => toggleEdit(i)}><i className="fa fa-pencil"></i></button>
                 <button title="Delete Data" className="px-3 py-1 mr-1 btn btn-danger" onClick={() => toggleDelete(i)}><i className="fa fa-minus-circle"></i></button>
               </React.Fragment> : ""}
-          </React.Fragment>
+          </div>
         });
       }
     });

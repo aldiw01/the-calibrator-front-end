@@ -149,7 +149,7 @@ export default {
     },
     {
       name: 'Test Report',
-      url: '/requests',
+      url: '/asd',
       icon: 'icon-calendar',
       children: [
         {

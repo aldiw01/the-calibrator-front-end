@@ -90,11 +90,12 @@ class AddDevice extends Component {
               <Col xs="12" md="9">
                 <ButtonDropdown isOpen={this.state.dropdown1} toggle={this.toggle1} name="dropdown1" className="w-100">
                   <DropdownToggle className="text-left">
-                    {data.defect_status === "1" ? "Rusak" : "Bagus"}
+                    {data.defect_status === "0" ? "Bagus" : data.defect_status === "1" ? "Rusak" : "Tidak Dipakai"}
                   </DropdownToggle>
                   <DropdownMenu style={{ width: "100%", overflow: "auto" }}>
                     <DropdownItem onClick={handleChangeNew} name="defect_status" value="0" >Bagus</DropdownItem>
                     <DropdownItem onClick={handleChangeNew} name="defect_status" value="1" >Rusak</DropdownItem>
+                    <DropdownItem onClick={handleChangeNew} name="defect_status" value="2" >Tidak Dipakai</DropdownItem>
                   </DropdownMenu>
                 </ButtonDropdown>
               </Col>

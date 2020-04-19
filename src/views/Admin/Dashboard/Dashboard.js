@@ -95,7 +95,7 @@ class Dashboard extends Component {
         <Row>
           <Col xs="12" md="6" lg="2">
             <Suspense fallback={this.loading()}>
-              <Devices dataBox={() => ({ variant: 'icon-wrench', jumlah: this.state.data.cal, bagus: this.state.data.cal - this.state.data.d_cal, rusak: this.state.data.d_cal, recalibration: this.state.data.u_cal })} refMain="/devices/cal" lab="CAL" >
+              <Devices dataBox={() => ({ variant: 'icon-wrench', jumlah: this.state.data.cal, bagus: this.state.data.d_cal, inactive: this.state.data.cal - this.state.data.d_cal, recalibration: this.state.data.u_cal })} refMain="/devices/cal" lab="CAL" >
                 Lab Kalibrasi
               </Devices>
             </Suspense>
@@ -103,7 +103,7 @@ class Dashboard extends Component {
 
           <Col xs="12" md="6" lg="2">
             <Suspense fallback={this.loading()}>
-              <Devices dataBox={() => ({ variant: 'icon-feed', jumlah: this.state.data.tra, bagus: this.state.data.tra - this.state.data.d_tra, rusak: this.state.data.d_tra, recalibration: this.state.data.u_tra })} refMain="/devices/tra" lab="TRA" >
+              <Devices dataBox={() => ({ variant: 'icon-feed', jumlah: this.state.data.tra, bagus: this.state.data.d_tra, inactive: this.state.data.tra - this.state.data.d_tra, recalibration: this.state.data.u_tra })} refMain="/devices/tra" lab="TRA" >
                 Lab Transmisi
               </Devices>
             </Suspense>
@@ -111,7 +111,7 @@ class Dashboard extends Component {
 
           <Col xs="12" md="6" lg="2">
             <Suspense fallback={this.loading()}>
-              <Devices dataBox={() => ({ variant: 'icon-diamond', jumlah: this.state.data.cab, bagus: this.state.data.cab - this.state.data.d_cab, rusak: this.state.data.d_cab, recalibration: this.state.data.u_cab })} refMain="/devices/cab" lab="CAB" >
+              <Devices dataBox={() => ({ variant: 'icon-diamond', jumlah: this.state.data.cab, bagus: this.state.data.d_cab, inactive: this.state.data.cab - this.state.data.d_cab, recalibration: this.state.data.u_cab })} refMain="/devices/cab" lab="CAB" >
                 Lab Kabel
               </Devices>
             </Suspense>
@@ -119,7 +119,7 @@ class Dashboard extends Component {
 
           <Col xs="12" md="6" lg="2">
             <Suspense fallback={this.loading()}>
-              <Devices dataBox={() => ({ variant: 'icon-screen-desktop', jumlah: this.state.data.dev, bagus: this.state.data.dev - this.state.data.d_dev, rusak: this.state.data.d_dev, recalibration: this.state.data.u_dev })} refMain="/devices/dev" lab="CPE" >
+              <Devices dataBox={() => ({ variant: 'icon-screen-desktop', jumlah: this.state.data.dev, bagus: this.state.data.d_dev, inactive: this.state.data.dev - this.state.data.d_dev, recalibration: this.state.data.u_dev })} refMain="/devices/dev" lab="CPE" >
                 Lab Device
               </Devices>
             </Suspense>
@@ -127,7 +127,7 @@ class Dashboard extends Component {
 
           <Col xs="12" md="6" lg="2">
             <Suspense fallback={this.loading()}>
-              <Devices dataBox={() => ({ variant: 'icon-energy', jumlah: this.state.data.ene, bagus: this.state.data.ene - this.state.data.d_ene, rusak: this.state.data.d_ene, recalibration: this.state.data.u_ene })} refMain="/devices/ene" lab="ENE" >
+              <Devices dataBox={() => ({ variant: 'icon-energy', jumlah: this.state.data.ene, bagus: this.state.data.d_ene, inactive: this.state.data.ene - this.state.data.d_ene, recalibration: this.state.data.u_ene })} refMain="/devices/ene" lab="ENE" >
                 Lab Energi
               </Devices>
             </Suspense>
@@ -135,7 +135,7 @@ class Dashboard extends Component {
 
           <Col xs="12" md="6" lg="2">
             <Suspense fallback={this.loading()}>
-              <Devices dataBox={() => ({ variant: 'icon-globe', jumlah: this.state.data.tot, bagus: this.state.data.tot - this.state.data.d_tot, rusak: this.state.data.d_tot, recalibration: this.state.data.u_tot })} lab="%2f" >
+              <Devices dataBox={() => ({ variant: 'icon-globe', jumlah: this.state.data.tot, bagus: this.state.data.d_tot, inactive: this.state.data.tot - this.state.data.d_tot, recalibration: this.state.data.u_tot })} lab="%2f" >
                 Total
               </Devices>
             </Suspense>

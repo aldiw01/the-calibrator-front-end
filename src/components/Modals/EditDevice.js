@@ -18,7 +18,8 @@ class EditDevice extends Component {
     super(props)
     this.state = {
       dropdown1: false,
-      dropdown2: false
+      dropdown2: false,
+      dropdown3: false
     }
   }
 
@@ -31,6 +32,12 @@ class EditDevice extends Component {
   toggle2 = () => {
     this.setState({
       dropdown2: !this.state.dropdown2
+    });
+  }
+
+  toggle3 = () => {
+    this.setState({
+      dropdown3: !this.state.dropdown3
     });
   }
 
@@ -90,11 +97,12 @@ class EditDevice extends Component {
               <Col xs="12" md="9">
                 <ButtonDropdown isOpen={this.state.dropdown1} toggle={this.toggle1} name="dropdown1" className="w-100">
                   <DropdownToggle className="text-left">
-                    {data.defect_status === "1" ? "Rusak" : "Bagus"}
+                    {data.defect_status === "0" ? "Bagus" : data.defect_status === "1" ? "Rusak" : "Tidak Dipakai"}
                   </DropdownToggle>
                   <DropdownMenu>
                     <DropdownItem onClick={handleChange} name="defect_status" value="0" >Bagus</DropdownItem>
                     <DropdownItem onClick={handleChange} name="defect_status" value="1" >Rusak</DropdownItem>
+                    <DropdownItem onClick={handleChange} name="defect_status" value="2" >Tidak Dipakai</DropdownItem>
                   </DropdownMenu>
                 </ButtonDropdown>
               </Col>
@@ -104,7 +112,7 @@ class EditDevice extends Component {
                 Tanggal Kalibrasi
               </Col>
               <Col xs="12" md="9">
-                <Input type="date" onChange={handleChange} name="calibration_date" value={data.calibration_date} required />
+                <Input type="date" onChange={handleChange} name="calibration_date" value={data.calibration_date} />
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -112,7 +120,7 @@ class EditDevice extends Component {
                 Akhir Kalibrasi
               </Col>
               <Col xs="12" md="9">
-                <Input type="date" onChange={handleChange} name="due_date" value={data.due_date} required />
+                <Input type="date" onChange={handleChange} name="due_date" value={data.due_date} />
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -120,7 +128,7 @@ class EditDevice extends Component {
                 Periode Kalibrasi (Tahun)
               </Col>
               <Col xs="12" md="9">
-                <Input type="number" onChange={handleChange} name="calibration_period" value={data.calibration_period} required />
+                <Input type="number" onChange={handleChange} name="calibration_period" value={data.calibration_period} />
               </Col>
             </FormGroup>
             <FormGroup row>
@@ -149,10 +157,26 @@ class EditDevice extends Component {
             </FormGroup>
             <FormGroup row>
               <Col md="3">
-                Metode Kalibrasi
+                Objek Kalibrasi
               </Col>
               <Col xs="12" md="9">
                 <ButtonDropdown isOpen={this.state.dropdown2} toggle={this.toggle2} name="dropdown2" className="w-100">
+                  <DropdownToggle className="text-left">
+                    {data.calibration_object === "1" ? "TRUE" : "FALSE"}
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem onClick={handleChange} name="calibration_object" value="1" >TRUE</DropdownItem>
+                    <DropdownItem onClick={handleChange} name="calibration_object" value="0" >FALSE</DropdownItem>
+                  </DropdownMenu>
+                </ButtonDropdown>
+              </Col>
+            </FormGroup>
+            <FormGroup row>
+              <Col md="3">
+                Metode Kalibrasi
+              </Col>
+              <Col xs="12" md="9">
+                <ButtonDropdown isOpen={this.state.dropdown3} toggle={this.toggle3} name="dropdown3" className="w-100">
                   <DropdownToggle className="text-left">
                     {data.calibration_method}
                   </DropdownToggle>

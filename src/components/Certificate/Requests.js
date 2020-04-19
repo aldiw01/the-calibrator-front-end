@@ -29,7 +29,7 @@ class Requests extends Component {
       }],
       focus: {
         id: '',
-        device_id: this.props.id,
+        device_id: '',
         calibration_date: '',
         due_date: '',
         test_engineer_id: '',
@@ -37,10 +37,10 @@ class Requests extends Component {
       },
       new: {
         id: '',
-        device_id: this.props.id,
+        device_id: '',
         calibration_date: '',
         due_date: '',
-        test_engineer_id: this.Auth.getProfile().id,
+        test_engineer_id: '',
         certificate_file: ''
       }
     }
@@ -50,8 +50,25 @@ class Requests extends Component {
     this.getData();
   }
 
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.data !== prevProps.data) {
+      this.setState({
+        new: {
+          id: '',
+          device_id: this.props.id,
+          calibration_date: this.props.data.actual_start,
+          due_date: this.props.data.actual_finished,
+          test_engineer_id: this.Auth.getProfile().id,
+          certificate_file: ''
+        }
+      })
+      this.getData();
+    }
+  }
+
   getData = () => {
-    axios.get(localStorage.getItem('serverAPI') + '/cal_certificates/devices/' + this.state.request_id.replace(new RegExp("/", 'g'), "%2F"))
+    axios.get(process.env.REACT_APP_API_PATH + '/cal_certificates/devices/' + this.props.id.replace(new RegExp("/", 'g'), "%2F"))
       .then(res => {
         this.setState({ data: res.data });
       })
@@ -88,8 +105,6 @@ class Requests extends Component {
   }
 
   handleChangeNewFile = (event) => {
-    console.log(event.target.name)
-    console.log(event.target.files[0])
     this.setState({
       new: {
         ...this.state.new,
@@ -109,7 +124,7 @@ class Requests extends Component {
       data.append('due_date', this.state.new.due_date);
       data.append('test_engineer_id', this.state.new.test_engineer_id);
       data.append('certificate_file', this.state.new.certificate_file);
-      axios.post(localStorage.getItem('serverAPI') + '/cal_certificates', data)
+      axios.post(process.env.REACT_APP_API_PATH + '/cal_certificates', data)
         .then(res => {
           this.setState({
             add: !this.state.add,
@@ -123,8 +138,23 @@ class Requests extends Component {
               certificate_file: ''
             }
           })
+          // INSERT HISTORY INTO DATABASE
+          var request = {
+            reference_id: this.state.data[this.state.id].id,
+            test_engineer_id: this.Auth.getProfile().id,
+            cal_step_id: "CER1",
+            message: this.state.message
+          }
+          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
+            .then(() => {
+              this.getData();
+            })
+            .catch(error => {
+              alert(error);
+              console.log(error);
+            });
+          ////////////////////////////////////////////////////////////////
           alert(res.data.message);
-          this.getData();
         })
         .catch(error => {
           alert(error);
@@ -137,15 +167,30 @@ class Requests extends Component {
     event.preventDefault();
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      axios.put(localStorage.getItem('serverAPI') + '/cal_certificates/' + this.state.data[this.state.id].id, this.state.focus)
+      axios.put(process.env.REACT_APP_API_PATH + '/cal_certificates/' + this.state.data[this.state.id].id, this.state.focus)
         .then(res => {
           this.setState({
             edit: !this.state.edit,
             loader: false,
             certificate_file: ''
           })
+          // INSERT HISTORY INTO DATABASE
+          var request = {
+            reference_id: this.state.data[this.state.id].id,
+            test_engineer_id: this.Auth.getProfile().id,
+            cal_step_id: "CER2",
+            message: this.state.message
+          }
+          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
+            .then(() => {
+              this.getData();
+            })
+            .catch(error => {
+              alert(error);
+              console.log(error);
+            });
+          ////////////////////////////////////////////////////////////////
           alert(res.data.message);
-          this.getData();
         })
         .catch(error => {
           alert(error);
@@ -157,14 +202,29 @@ class Requests extends Component {
   handleDelete = (id) => {
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
-      axios.delete(localStorage.getItem('serverAPI') + '/cal_certificates/ever/' + id)
+      axios.delete(process.env.REACT_APP_API_PATH + '/cal_certificates/ever/' + id)
         .then(res => {
           this.setState({
             delete: !this.state.delete,
             loader: false
           })
+          // INSERT HISTORY INTO DATABASE
+          var request = {
+            reference_id: this.state.data[this.state.id].id,
+            test_engineer_id: this.Auth.getProfile().id,
+            cal_step_id: "CER3",
+            message: this.state.message
+          }
+          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
+            .then(() => {
+              this.getData();
+            })
+            .catch(error => {
+              alert(error);
+              console.log(error);
+            });
+          ////////////////////////////////////////////////////////////////
           alert(res.data.message);
-          this.getData();
         })
         .catch(error => {
           alert(error);
@@ -195,6 +255,7 @@ class Requests extends Component {
   }
 
   render() {
+
     const role = this.Auth.getProfile().role
     const lab = this.Auth.getProfile().lab
 
@@ -202,18 +263,22 @@ class Requests extends Component {
       overflowWrap: 'break-word'
     }
 
+    console.log("render")
+    console.log(this.props.data[0])
     return (
       <Row>
         <Col xs="12">
           <Card>
             <CardHeader>
-              <i className="fa fa-history"></i><strong>Test Reports</strong>
+              <i className="fa fa-certificate"></i><strong>Test Reports</strong>
               {role === "2" || lab === this.props.id.slice(-3) ?
                 <Button color="success" className="float-right" onClick={this.toggleAdd}>
                   Tambah{' '}
                   <i className="fa fa-plus"></i>
                 </Button> : ""}
             </CardHeader>
+
+            {/* Certificates / Test Reports List */}
             <CardBody>
               <ListGroup>
                 {this.state.data[0].id ?

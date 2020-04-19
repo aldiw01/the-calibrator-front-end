@@ -62,30 +62,33 @@ class Schedules extends Component {
     var events = []
     this.state.data.forEach(function (items, i) {
       if (items.id !== '') {
-        events.push({
-          id: 2 * i,
-          title: items.id,
-          manufacturer: items.manufacturer,
-          model: items.model,
-          start: new Date(items.regular_check_date),
-          end: new Date(items.regular_check_date),
-          allDay: true,
-          desc: items.name,
-          calibration_method: items.calibration_method
-        });
-        events.push({
-          id: 2 * i + 1,
-          title: items.id,
-          manufacturer: items.manufacturer,
-          model: items.model,
-          start: new Date(items.due_date),
-          end: new Date(items.due_date),
-          allDay: true,
-          desc: items.name,
-          calibration_method: items.calibration_method,
-          hexColor: "cf0f17",
-          selectedColor: "9f0c12"
-        });
+        if (items.type === "calibration") {
+          events.push({
+            id: i,
+            title: items.id,
+            manufacturer: items.manufacturer,
+            model: items.model,
+            start: new Date(items.due_date),
+            end: new Date(items.due_date),
+            allDay: true,
+            desc: items.name,
+            calibration_method: items.calibration_method,
+            hexColor: "cf0f17",
+            selectedColor: "9f0c12"
+          });
+        } else {
+          events.push({
+            id: i,
+            title: items.id,
+            manufacturer: items.manufacturer,
+            model: items.model,
+            start: new Date(items.regular_check_date),
+            end: new Date(items.regular_check_date),
+            allDay: true,
+            desc: items.name,
+            calibration_method: items.calibration_method
+          });
+        }
       }
     });
     this.setState({

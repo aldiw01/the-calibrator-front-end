@@ -1,16 +1,12 @@
 import React, { Component } from 'react';
 import { Card, CardBody, CardHeader, Col, Row, Button } from 'reactstrap';
-import { Link } from 'react-router-dom';
-import { MDBDataTable } from 'mdbreact';
 import axios from 'axios';
 import AuthService from 'server/AuthService';
-import { CSVLink } from 'react-csv';
-import AddRequest from 'components/Modals/Requests/AddRequest';
-import ViewRequest from 'components/Modals/Requests/ViewRequest';
 import EditRequest from 'components/Modals/Requests/EditRequest';
-import DeleteRequest from 'components/Modals/Requests/DeleteRequest';
+import Certificate from 'components/Certificate/Requests';
+import History from 'components/History/HistoryList';
 
-class Calibration extends Component {
+class RequestContent extends Component {
 
   constructor(props) {
     super(props);
@@ -82,29 +78,6 @@ class Calibration extends Component {
         engineer_2: '',
         engineer_3: '',
         documentation: ''
-      },
-      new: {
-        id: '',
-        lab: '',
-        request_type: '',
-        device_name: '',
-        manufacturer: '',
-        type: '',
-        serial_number: '',
-        capacity: '',
-        made_in: '',
-        test_reference: '',
-        company_name: '',
-        company_address: '',
-        created: '',
-        start_target: '',
-        finished_target: '',
-        actual_start: '',
-        actual_finished: '',
-        engineer_1: '',
-        engineer_2: '',
-        engineer_3: '',
-        documentation: ''
       }
     }
   }
@@ -114,73 +87,13 @@ class Calibration extends Component {
   }
 
   getData = () => {
-    axios.get(process.env.REACT_APP_API_PATH + '/cal_requests')
+    axios.get(process.env.REACT_APP_API_PATH + '/cal_requests/' + this.props.match.params.id)
       .then(res => {
         this.setState({ data: res.data });
-        this.getCSVData();
       })
       .catch(error => {
         console.log(error);
       });
-  }
-
-  getCSVData = () => {
-    var csv_headers = [
-      { label: "NO", key: "no" },
-      { label: "NO. SPK", key: "id" },
-      { label: "LAB", key: "lab" },
-      { label: "TIPE PENGUJIAN", key: "request_type" },
-      { label: "NAMA ALAT UKUR", key: "name" },
-      { label: "MERK", key: "manufacturer" },
-      { label: "MODEL", key: "type" },
-      { label: "NO. SERI", key: "serial_number" },
-      { label: "KAPASITAS", key: "capacity" },
-      { label: "MADE IN", key: "made_in" },
-      { label: "REFERENSI UJI", key: "test_reference" },
-      { label: "NAMA PERUSAHAAN", key: "company_name" },
-      { label: "ALAMAT PERUSAHAAN", key: "company_address" },
-      { label: "TANGGAL SPK", key: "created" },
-      { label: "TARGET MULAI", key: "start_target" },
-      { label: "TARGET SELESAI", key: "finished_target" },
-      { label: "ACTUAL START", key: "actual_start" },
-      { label: "ACTUAL FINISHED", key: "actual_finished" },
-      { label: "ENGINEER 1", key: "engineer_1" },
-      { label: "ENGINEER 2", key: "engineer_2" },
-      { label: "ENGINEER 3", key: "engineer_3" }
-    ];
-
-    var csv_data = [];
-    this.state.data.forEach(function (items, i) {
-      if (items.id !== '') {
-        csv_data.push({
-          no: i + 1,
-          id: items.id,
-          lab: items.lab,
-          request_type: items.request_type,
-          device_name: items.device_name,
-          manufacturer: items.manufacturer,
-          type: items.type,
-          serial_number: items.serial_number,
-          capacity: items.capacity,
-          made_in: items.made_in,
-          test_reference: items.test_reference,
-          company_name: items.company_name,
-          company_address: items.company_address,
-          created: items.created,
-          start_target: items.start_target,
-          finished_target: items.finished_target,
-          actual_start: items.actual_start,
-          actual_finished: items.actual_finished,
-          engineer_1: items.engineer_1,
-          engineer_2: items.engineer_2,
-          engineer_3: items.engineer_3
-        });
-      }
-    });
-    this.setState({
-      csv_headers: csv_headers,
-      csv_data: csv_data
-    })
   }
 
   handleChange = (event) => {
@@ -425,126 +338,136 @@ class Calibration extends Component {
     const role = this.Auth.getProfile().role
     const lab = this.Auth.getProfile().lab
 
-    const data = {
-      columns: [
-        {
-          label: 'No',
-          field: 'no',
-          sort: 'asc'
-        },
-        {
-          label: 'No SPK',
-          field: 'id',
-          sort: 'asc'
-        },
-        {
-          label: 'Nama Alat',
-          field: 'device_name',
-          sort: 'asc'
-        },
-        {
-          label: 'Target Selesai',
-          field: 'finished_target',
-          sort: 'asc'
-        },
-        {
-          label: 'Sisa Waktu',
-          field: 'remaining_time',
-          sort: 'asc'
-        },
-        {
-          label: 'Status',
-          field: 'status',
-          sort: 'asc'
-        },
-        {
-          label: 'PIC',
-          field: 'engineer',
-          sort: 'asc'
-        },
-        {
-          label: 'Actions',
-          field: 'actions',
-          sort: 'asc'
-        }
-      ],
-      rows: this.state.data
-    }
-
-    var rows = [];
-    let toggleEdit = this.toggleEdit;
-    let toggleDelete = this.toggleDelete;
-    data.rows.forEach(function (items, i) {
-      if (items.id !== '') {
-        rows.push({
-          no: i + 1,
-          id: items.id,
-          device_name: items.device_name,
-          finished_target: items.finished_target,
-          remaining_time: items.actual_finished === "" ? Math.ceil((new Date(items.finished_target) - new Date()) / (24 * 60 * 60 * 1000)) : "-",
-          status: items.actual_finished === "" ? "On Progress" : "Finished",
-          engineer: items.engineer_1,
-          actions: <div className="d-flex">
-            {/* <button title="View Data" className="px-3 py-1 mr-1 btn btn-primary" onClick={() => toggleView(i)}><i className="fa fa-folder-open"></i></button> */}
-            <Link to={"/requests/content/" + items.id.replace(new RegExp("/", 'g'), "%2F")} className="px-3 py-1 mr-1 btn btn-primary" ><i className="fa fa-folder-open"></i></Link>
-            {role === "2" || lab === "CAL" ?
-              <React.Fragment>
-                <button title="Edit Data" className="px-3 py-1 mr-1 btn btn-warning" onClick={() => toggleEdit(i)}><i className="fa fa-pencil"></i></button>
-                <button title="Delete Data" className="px-3 py-1 mr-1 btn btn-danger" onClick={() => toggleDelete(i)}><i className="fa fa-minus-circle"></i></button>
-              </React.Fragment> : ""}
-          </div>
-        });
-      }
-    });
-    const dataFix = {
-      columns: data.columns,
-      rows: rows
-    }
-
-    const csvButton = {
-      position: "absolute",
-      right: "20px",
-      top: "5px",
+    var viewStyle = {
+      overflowWrap: 'break-word'
     }
 
     return (
       <div className="animated fadeIn">
         <Row>
-          <Col xs="12" xl="12">
+          <Col xs="12" lg="8">
             <Card>
               <CardHeader>
                 <i className="fa fa-align-justify"></i><strong>SPK Lab Kalibrasi</strong>
-                <div style={csvButton}>
-                  <Button color="success" className="float-right" onClick={this.toggleAdd}>
-                    Tambah{' '}
-                    <i className="fa fa-plus"></i>
-                  </Button>
-                  <CSVLink data={this.state.csv_data} headers={this.state.csv_headers} className="float-right mx-2">
-                    <Button color="secondary">
-                      <i className="fa fa-file-excel-o"></i>
-                    </Button>
-                  </CSVLink>
-                </div>
               </CardHeader>
               <CardBody>
-                <MDBDataTable
-                  striped
-                  bordered
-                  small
-                  data={dataFix}
-                  entriesOptions={[10, 50, 100, 1000]}
-                />
 
-                <AddRequest add={this.state.add} data={this.state.new} handleAdd={this.handleAdd} handleChangeNew={this.handleChangeNew} handleChangeNewFile={this.handleChangeNewFile} loader={this.state.loader} toggleAdd={this.toggleAdd} handleChangeNewEngineer1={this.handleChangeNewEngineer1} handleChangeNewEngineer2={this.handleChangeNewEngineer2} handleChangeNewEngineer3={this.handleChangeNewEngineer3} />
+                <Col xs="12" className="m-auto">
+                  <Row>
+                    <div className="w-100 py-2"></div>
+                    <Col className="border-bottom"><strong>Isi Surat Perintah Kerja</strong></Col>
+                    <div className="w-100 py-2"></div>
 
-                <ViewRequest data={this.state.focus} getData={this.getData} id={this.state.id} toggleView={this.toggleView} view={this.state.view} />
+                    <Col xs="3">No SPK</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].id}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Laboratorium Penguji</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].lab}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Tipe Pengujian</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].request_type}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Nama Perangkat</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].device_name}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Merk</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].manufacturer}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Model</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].model}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Serial Number</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].serial_number}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Kapasitas</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].capacity}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Made In</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].made_in}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Referensi Uji</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].test_reference}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Nama Perusahaan</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].company_name}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Alamat Perusahaan</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].company_address}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <div className="w-100 py-2"></div>
+                    <Col className="border-bottom"><strong>Jadwal SPK</strong></Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Tanggal SPK</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.data[0].created).toLocaleDateString("en-GB")}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Target Mulai Uji</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.data[0].start_target).toLocaleDateString("en-GB")}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Target Selesai Uji</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.data[0].finished_target).toLocaleDateString("en-GB")}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Mulai Uji</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].actual_start ? new Date(this.state.data[0].actual_start).toLocaleDateString("en-GB") : "-"}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Selesai Uji</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].actual_finished ? new Date(this.state.data[0].actual_finished).toLocaleDateString("en-GB") : "-"}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <div className="w-100 py-2"></div>
+                    <Col className="border-bottom"><strong>Pelaksana SPK</strong></Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Test Engineer 1</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].engineer_1}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Test Engineer 2</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].engineer_2}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="3">Test Engineer 3</Col>
+                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].engineer_3}</Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="12" className="m-auto">
+                      {role === "2" || lab === this.state.data[0].id.slice(-3) ?
+                        <Button color="danger" className="position-absolute" style={{ right: '0', marginRight: '15px' }} onClick={this.toggleEditDocumentation}>
+                          <i className="fa fa-pencil"></i>
+                        </Button> : ""}
+                      <img className="d-block w-100" src={process.env.REACT_APP_API_PATH + '/uploads/requests/' + this.state.data[0].documentation} alt='Calibration' />
+                    </Col>
+                    <div className="w-100 py-2"></div>
+
+                    <Col xs="12">
+                      <Certificate id={this.state.data[0].id} data={this.state.data[0]} />
+                    </Col>
+                  </Row>
+                </Col>
 
                 <EditRequest edit={this.state.edit} data={this.state.focus} id={this.state.id} handleChangeEditEngineer1={this.handleChangeEditEngineer1} handleChangeEditEngineer2={this.handleChangeEditEngineer2} handleChangeEditEngineer3={this.handleChangeEditEngineer3} handleEdit={this.handleEdit} handleChange={this.handleChange} loader={this.state.loader} toggleEdit={this.toggleEdit} />
 
-                <DeleteRequest _delete={this.state.delete} data={this.state.focus} id={this.state.id} handleDelete={this.handleDelete} loader={this.state.loader} toggleDelete={this.toggleDelete} />
-
               </CardBody>
             </Card>
+          </Col>
+          <Col xs="12" lg="4">
+            <History id={this.state.data[0].id} />
           </Col>
         </Row>
       </div>
@@ -552,4 +475,4 @@ class Calibration extends Component {
   }
 }
 
-export default Calibration;
+export default RequestContent;
