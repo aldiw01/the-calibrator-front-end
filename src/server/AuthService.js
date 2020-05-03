@@ -15,7 +15,7 @@ export default class AuthService {
             'email': email,
             'password': password
         };
-        return (axios.post(localStorage.getItem('serverAPI') + '/accounts/login', details)
+        return (axios.post(process.env.REACT_APP_API_PATH + '/accounts/login', details)
             .then(res => {
                 if (res.data.success) {
                     this.setToken(res.data.token) // Setting the token in localStorage

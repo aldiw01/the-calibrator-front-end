@@ -3,6 +3,12 @@ import { Button, Card, CardBody, CardHeader, Col, ListGroup, ListGroupItem, List
 import axios from 'axios';
 import AuthService from 'server/AuthService';
 import Spinner from 'react-spinkit';
+import PropTypes from 'prop-types';
+
+const propTypes = {
+  data: PropTypes.any,
+  id: PropTypes.string
+};
 
 class Requests extends Component {
   constructor(props) {
@@ -256,6 +262,8 @@ class Requests extends Component {
 
   render() {
 
+    const { data } = this.props;
+
     const role = this.Auth.getProfile().role
     const lab = this.Auth.getProfile().lab
 
@@ -263,15 +271,13 @@ class Requests extends Component {
       overflowWrap: 'break-word'
     }
 
-    console.log("render")
-    console.log(this.props.data[0])
     return (
       <Row>
         <Col xs="12">
           <Card>
             <CardHeader>
               <i className="fa fa-certificate"></i><strong>Test Reports</strong>
-              {role === "2" || lab === this.props.id.slice(-3) ?
+              {role === "2" || lab === data.id.toUpperCase() ?
                 <Button color="success" className="float-right" onClick={this.toggleAdd}>
                   Tambah{' '}
                   <i className="fa fa-plus"></i>
@@ -314,7 +320,7 @@ class Requests extends Component {
               </ListGroup>
             </CardBody>
 
-            <Modal isOpen={this.state.add} toggle={this.toggleAdd} className={'modal-success modal-lg ' + this.props.className}>
+            <Modal isOpen={this.state.add} toggle={this.toggleAdd} className={'modal-success modal-lg'}>
               <Form onSubmit={this.handleAdd} method="post" encType="multipart/form-data" className="form-horizontal">
                 <ModalHeader toggle={this.toggleAdd}>Sertifikat Baru</ModalHeader>
                 <ModalBody className="mt-4 mx-4">
@@ -378,7 +384,7 @@ class Requests extends Component {
               </Form>
             </Modal>
 
-            <Modal isOpen={this.state.edit} toggle={() => this.toggleEdit(this.state.id)} className={'modal-primary modal-lg ' + this.props.className}>
+            <Modal isOpen={this.state.edit} toggle={() => this.toggleEdit(this.state.id)} className={'modal-primary modal-lg'}>
               <Form onSubmit={this.handleEdit} method="post" encType="multipart/form-data" className="form-horizontal">
                 <ModalHeader toggle={() => this.toggleEdit(this.state.id)}>Edit Sertifikat</ModalHeader>
                 <ModalBody className="mt-4 mx-4">
@@ -423,7 +429,7 @@ class Requests extends Component {
               </Form>
             </Modal>
 
-            <Modal isOpen={this.state.delete} toggle={() => this.toggleDelete(this.state.id)} className={'modal-danger modal-sm ' + this.props.className}>
+            <Modal isOpen={this.state.delete} toggle={() => this.toggleDelete(this.state.id)} className={'modal-danger modal-sm'}>
               <ModalHeader toggle={() => this.toggleDelete(this.state.id)}>Delete Sertifikat</ModalHeader>
               <ModalBody>
                 Do you really want to delete this certificate?
@@ -441,5 +447,7 @@ class Requests extends Component {
     );
   }
 }
+
+Requests.propTypes = propTypes;
 
 export default Requests;

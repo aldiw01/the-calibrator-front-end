@@ -26,8 +26,46 @@ class ViewDevice extends Component {
       edit_specification: false,
       loader: false,
       manual_file: false,
-      spec_file: false
+      spec_file: false,
+      history: [{
+        reference_id: '',
+        name: '',
+        action: '',
+        info: '',
+        step_number: '',
+        message: '',
+        created: ''
+      }]
     }
+  }
+
+  componentDidUpdate(prevProps) {
+    // Typical usage (don't forget to compare props):
+    if (this.props.data !== prevProps.data) {
+      this.setState({
+        history: [{
+          reference_id: '',
+          name: '',
+          action: '',
+          info: '',
+          step_number: '',
+          message: '',
+          created: ''
+        }]
+      })
+      this.getHistory();
+    }
+  }
+
+  getHistory = () => {
+    console.log(this.props.data.id)
+    axios.get(process.env.REACT_APP_API_PATH + '/history/reference/' + this.props.data.id.replace(new RegExp("/", 'g'), "%2F"))
+      .then(res => {
+        this.setState({ history: res.data });
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   handleChangeFile = (event) => {
@@ -79,7 +117,7 @@ class ViewDevice extends Component {
           }
           axios.post(process.env.REACT_APP_API_PATH + '/history', request)
             .then(() => {
-              this.getData();
+              this.props.getData();
             })
             .catch(error => {
               alert(error);
@@ -117,7 +155,7 @@ class ViewDevice extends Component {
           }
           axios.post(process.env.REACT_APP_API_PATH + '/history', request)
             .then(() => {
-              this.getData();
+              this.props.getData();
             })
             .catch(error => {
               alert(error);
@@ -155,7 +193,7 @@ class ViewDevice extends Component {
           }
           axios.post(process.env.REACT_APP_API_PATH + '/history', request)
             .then(() => {
-              this.getData();
+              this.props.getData();
             })
             .catch(error => {
               alert(error);
@@ -264,7 +302,7 @@ class ViewDevice extends Component {
                   <Certificate id={data.id} />
                 </Col>
                 <Col xs="12">
-                  <History id={data.id} />
+                  <History data={this.state.history} getData={this.getHistory} id={data.id} />
                 </Col>
               </Row>
             </Col>

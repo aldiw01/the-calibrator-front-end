@@ -45,7 +45,7 @@ const routes = [
   { path: '/devices/table/:lab/:type/:status', exact: true, name: 'Table', component: D_Table },
 
   { path: '/requests', exact: true, name: 'Requests', component: Requests },
-  { path: '/requests/content/:id', name: 'Content', component: RequestContent },
+  { path: '/requests/content/:lab/:id', name: 'Content', component: RequestContent },
 
   { path: '/schedules', exact: true, name: 'Schedules', component: Schedules },
   { path: '/schedules/cab', name: 'Cable', component: Schedules },

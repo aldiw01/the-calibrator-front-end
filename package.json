@@ -39,6 +39,7 @@
     "react-router-config": "^4.4.0-beta.8",
     "react-router-dom": "~4.3.1",
     "react-spinkit": "^3.0.0",
+    "react-step-progress-bar": "^1.0.3",
     "react-swipeable-views": "^0.13.3",
     "react-test-renderer": "^16.8.5",
     "reactstrap": "^7.1.0",

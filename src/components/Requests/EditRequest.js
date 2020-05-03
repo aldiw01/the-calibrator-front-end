@@ -36,12 +36,12 @@ class EditRequest extends Component {
 
   render() {
 
-    const { edit, data, handleChange, handleEdit, id, loader, toggleEdit } = this.props;
+    const { edit, data, handleChange, handleEdit, loader, toggleEdit } = this.props;
 
     return (
-      <Modal isOpen={edit} toggle={() => toggleEdit(id)} className={'modal-primary modal-lg'}>
+      <Modal isOpen={edit} toggle={toggleEdit} className={'modal-primary modal-lg'}>
         <Form onSubmit={handleEdit} method="post" encType="multipart/form-data" className="form-horizontal">
-          <ModalHeader toggle={() => toggleEdit(id)}>Edit Perangkat</ModalHeader>
+          <ModalHeader toggle={toggleEdit}>Edit Perangkat</ModalHeader>
           <ModalBody className="mt-4 mx-4">
 
             <FormGroup row>
@@ -254,7 +254,7 @@ class EditRequest extends Component {
           <ModalFooter>
             {loader ? <Spinner name='double-bounce' fadeIn="quarter" /> : ""}
             <Button color="primary" type="submit" >Save Changes</Button>{' '}
-            <Button color="secondary" onClick={() => toggleEdit(id)}>Cancel</Button>
+            <Button color="secondary" onClick={toggleEdit}>Cancel</Button>
           </ModalFooter>
         </Form>
       </Modal>

@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
-import { Card, CardBody, CardHeader, Col, Row, Button } from 'reactstrap';
+import { Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
 import axios from 'axios';
 import AuthService from 'server/AuthService';
-import EditRequest from 'components/Modals/Requests/EditRequest';
-import Certificate from 'components/Certificate/Requests';
+import DetailRequest from 'components/Requests/DetailRequest';
+import EditRequest from 'components/Requests/EditRequest';
+import StatusBar from 'components/Widgets/StatusBar';
 import History from 'components/History/HistoryList';
+import Actions from 'components/Requests/Actions';
+import { Redirect } from 'react-router-dom';
 
 class RequestContent extends Component {
 
@@ -16,15 +19,10 @@ class RequestContent extends Component {
     }
     this.state = {
       id: 0,
-      add: false,
-      view: false,
       edit: false,
-      delete: false,
       loader: false,
       csv_data: [],
       csv_headers: [],
-      dropdown1: false,
-      dropdown2: false,
       certificate: [{
         id: '',
         device_id: '',
@@ -78,7 +76,29 @@ class RequestContent extends Component {
         engineer_2: '',
         engineer_3: '',
         documentation: ''
-      }
+      },
+      history: [{
+        reference_id: '',
+        name: '',
+        action: '',
+        info: '',
+        step_number: '',
+        message: '',
+        created: ''
+      }],
+      request_step: [{
+        step_number: 1,
+        step_name: ''
+      }],
+      measuring_equipment: [{
+        id: '',
+        request_id: this.props.match.params.id.replace(new RegExp("%2F", 'g'), "/"),
+        device_name: '',
+        manufacturer: '',
+        model: '',
+        serial_number: '',
+        device_id: ''
+      }]
     }
   }
 
@@ -87,13 +107,38 @@ class RequestContent extends Component {
   }
 
   getData = () => {
-    axios.get(process.env.REACT_APP_API_PATH + '/cal_requests/' + this.props.match.params.id)
+    axios.get(process.env.REACT_APP_API_PATH + '/cal_requests/' + this.props.match.params.id.replace(new RegExp("/", 'g'), "%2F"))
       .then(res => {
         this.setState({ data: res.data });
       })
       .catch(error => {
         console.log(error);
       });
+
+    axios.get(process.env.REACT_APP_API_PATH + '/history/reference/' + this.props.match.params.id.replace(new RegExp("/", 'g'), "%2F"))
+      .then(res => {
+        this.setState({ history: res.data });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    axios.get(process.env.REACT_APP_API_PATH + '/history/request_step/' + this.props.match.params.id.replace(new RegExp("/", 'g'), "%2F"))
+      .then(res => {
+        this.setState({ request_step: res.data });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
+    axios.get(process.env.REACT_APP_API_PATH + '/measuring_equipment/request/' + this.props.match.params.id.replace(new RegExp("/", 'g'), "%2F"))
+      .then(res => {
+        this.setState({ measuring_equipment: res.data });
+      })
+      .catch(error => {
+        console.log(error);
+      });
+
   }
 
   handleChange = (event) => {
@@ -132,109 +177,6 @@ class RequestContent extends Component {
     })
   }
 
-  handleChangeNew = (event) => {
-    this.setState({
-      new: {
-        ...this.state.new,
-        [event.target.name]: event.target.value
-      }
-    })
-  }
-
-  handleChangeNewEngineer1 = (event, { newValue }) => {
-    this.setState({
-      new: {
-        ...this.state.new,
-        engineer_1: newValue
-      }
-    })
-  }
-
-  handleChangeNewEngineer2 = (event, { newValue }) => {
-    this.setState({
-      new: {
-        ...this.state.new,
-        engineer_2: newValue
-      }
-    })
-  }
-
-  handleChangeNewEngineer3 = (event, { newValue }) => {
-    this.setState({
-      new: {
-        ...this.state.new,
-        engineer_3: newValue
-      }
-    })
-  }
-
-  handleChangeNewFile = (event) => {
-    this.setState({
-      new: {
-        ...this.state.new,
-        [event.target.name]: event.target.files[0]
-      }
-    })
-  }
-
-  handleAdd = (event) => {
-    event.preventDefault();
-    if (window.confirm("You will create change(s) on database. Are you sure?")) {
-      this.setState({ loader: true });
-      axios.post(process.env.REACT_APP_API_PATH + '/cal_requests', this.state.new)
-        .then(res => {
-          this.setState({
-            add: !this.state.add,
-            loader: false,
-            new: {
-              id: '',
-              lab: '',
-              request_type: '',
-              device_name: '',
-              manufacturer: '',
-              type: '',
-              serial_number: '',
-              capacity: '',
-              made_in: '',
-              test_reference: '',
-              company_name: '',
-              company_address: '',
-              created: '',
-              start_target: '',
-              finished_target: '',
-              actual_start: '',
-              actual_finished: '',
-              engineer_1: '',
-              engineer_2: '',
-              engineer_3: '',
-              documentation: ''
-            }
-          })
-          // INSERT HISTORY INTO DATABASE
-          var request = {
-            reference_id: this.state.data[this.state.id].id,
-            test_engineer_id: this.Auth.getProfile().id,
-            cal_step_id: "REQ1",
-            message: this.state.message
-          }
-          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
-            .then(() => {
-              this.getData();
-            })
-            .catch(error => {
-              alert(error);
-              console.log(error);
-            });
-          ////////////////////////////////////////////////////////////////
-          alert(res.data.message);
-        })
-        .catch(error => {
-          alert(error);
-          console.log(error);
-        });
-    }
-  }
-
   handleEdit = (event) => {
     event.preventDefault();
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
@@ -270,67 +212,10 @@ class RequestContent extends Component {
     }
   }
 
-  handleDelete = (id) => {
-    if (window.confirm("You will create change(s) on database. Are you sure?")) {
-      this.setState({ loader: true });
-      axios.delete(process.env.REACT_APP_API_PATH + '/cal_requests/ever/' + id.replace(new RegExp("/", 'g'), "%2F"))
-        .then(res => {
-          this.setState({
-            delete: !this.state.delete,
-            loader: false
-          })
-          // INSERT HISTORY INTO DATABASE
-          var request = {
-            reference_id: this.state.data[this.state.id].id,
-            test_engineer_id: this.Auth.getProfile().id,
-            cal_step_id: "REQ3",
-            message: this.state.message
-          }
-          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
-            .then(() => {
-              this.getData();
-            })
-            .catch(error => {
-              alert(error);
-              console.log(error);
-            });
-          ////////////////////////////////////////////////////////////////
-          alert(res.data.message);
-        })
-        .catch(error => {
-          alert(error);
-          console.log(error);
-        });
-    }
-  }
-
-  toggleAdd = () => {
+  toggleEdit = () => {
     this.setState({
-      add: !this.state.add,
-    });
-  }
-
-  toggleView = (id) => {
-    this.setState({
-      id: id,
-      view: !this.state.view,
-      focus: this.state.data[id]
-    });
-  }
-
-  toggleEdit = (id) => {
-    this.setState({
-      id: id,
       edit: !this.state.edit,
-      focus: this.state.data[id]
-    });
-  }
-
-  toggleDelete = (id) => {
-    this.setState({
-      id: id,
-      delete: !this.state.delete,
-      focus: this.state.data[id]
+      focus: this.state.data[0]
     });
   }
 
@@ -338,138 +223,42 @@ class RequestContent extends Component {
     const role = this.Auth.getProfile().role
     const lab = this.Auth.getProfile().lab
 
-    var viewStyle = {
-      overflowWrap: 'break-word'
+    const editButton = {
+      position: "absolute",
+      right: "20px",
+      top: "5px",
     }
 
     return (
       <div className="animated fadeIn">
-        <Row>
-          <Col xs="12" lg="8">
-            <Card>
-              <CardHeader>
-                <i className="fa fa-align-justify"></i><strong>SPK Lab Kalibrasi</strong>
-              </CardHeader>
-              <CardBody>
 
-                <Col xs="12" className="m-auto">
-                  <Row>
-                    <div className="w-100 py-2"></div>
-                    <Col className="border-bottom"><strong>Isi Surat Perintah Kerja</strong></Col>
-                    <div className="w-100 py-2"></div>
+        {role === "2" || role === "3" || role === "7" || lab === this.props.match.params.lab.toUpperCase() ?
 
-                    <Col xs="3">No SPK</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].id}</Col>
-                    <div className="w-100 py-2"></div>
+          <Row>
+            <Col xs="12">
+              <StatusBar id="CAL" percent={(this.state.request_step[0].step_number - 1) * 25} />
+            </Col>
+            <Col xs="12" lg="8">
+              <Card>
+                <CardHeader>
+                  <i className="fa fa-align-justify"></i><strong>SPK Lab Kalibrasi</strong>
+                  <button title="Edit Data" className="btn btn-warning" style={editButton} onClick={this.toggleEdit}><i className="fa fa-pencil"></i></button>
+                </CardHeader>
+                <CardBody>
 
-                    <Col xs="3">Laboratorium Penguji</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].lab}</Col>
-                    <div className="w-100 py-2"></div>
+                  <DetailRequest data={this.state.data[0]} />
 
-                    <Col xs="3">Tipe Pengujian</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].request_type}</Col>
-                    <div className="w-100 py-2"></div>
+                  <EditRequest edit={this.state.edit} data={this.state.focus} id={this.state.id} handleChangeEditEngineer1={this.handleChangeEditEngineer1} handleChangeEditEngineer2={this.handleChangeEditEngineer2} handleChangeEditEngineer3={this.handleChangeEditEngineer3} handleEdit={this.handleEdit} handleChange={this.handleChange} loader={this.state.loader} toggleEdit={this.toggleEdit} />
 
-                    <Col xs="3">Nama Perangkat</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].device_name}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Merk</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].manufacturer}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Model</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].model}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Serial Number</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].serial_number}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Kapasitas</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].capacity}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Made In</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].made_in}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Referensi Uji</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].test_reference}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Nama Perusahaan</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].company_name}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Alamat Perusahaan</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].company_address}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <div className="w-100 py-2"></div>
-                    <Col className="border-bottom"><strong>Jadwal SPK</strong></Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Tanggal SPK</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.data[0].created).toLocaleDateString("en-GB")}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Target Mulai Uji</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.data[0].start_target).toLocaleDateString("en-GB")}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Target Selesai Uji</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{new Date(this.state.data[0].finished_target).toLocaleDateString("en-GB")}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Mulai Uji</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].actual_start ? new Date(this.state.data[0].actual_start).toLocaleDateString("en-GB") : "-"}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Selesai Uji</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].actual_finished ? new Date(this.state.data[0].actual_finished).toLocaleDateString("en-GB") : "-"}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <div className="w-100 py-2"></div>
-                    <Col className="border-bottom"><strong>Pelaksana SPK</strong></Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Test Engineer 1</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].engineer_1}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Test Engineer 2</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].engineer_2}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="3">Test Engineer 3</Col>
-                    <Col xs="9" className="border-bottom mt-auto" style={viewStyle}>{this.state.data[0].engineer_3}</Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="12" className="m-auto">
-                      {role === "2" || lab === this.state.data[0].id.slice(-3) ?
-                        <Button color="danger" className="position-absolute" style={{ right: '0', marginRight: '15px' }} onClick={this.toggleEditDocumentation}>
-                          <i className="fa fa-pencil"></i>
-                        </Button> : ""}
-                      <img className="d-block w-100" src={process.env.REACT_APP_API_PATH + '/uploads/requests/' + this.state.data[0].documentation} alt='Calibration' />
-                    </Col>
-                    <div className="w-100 py-2"></div>
-
-                    <Col xs="12">
-                      <Certificate id={this.state.data[0].id} data={this.state.data[0]} />
-                    </Col>
-                  </Row>
-                </Col>
-
-                <EditRequest edit={this.state.edit} data={this.state.focus} id={this.state.id} handleChangeEditEngineer1={this.handleChangeEditEngineer1} handleChangeEditEngineer2={this.handleChangeEditEngineer2} handleChangeEditEngineer3={this.handleChangeEditEngineer3} handleEdit={this.handleEdit} handleChange={this.handleChange} loader={this.state.loader} toggleEdit={this.toggleEdit} />
-
-              </CardBody>
-            </Card>
-          </Col>
-          <Col xs="12" lg="4">
-            <History id={this.state.data[0].id} />
-          </Col>
-        </Row>
+                </CardBody>
+              </Card>
+            </Col>
+            <Col xs="12" lg="4">
+              <Actions id={this.state.data[0].id} getData={this.getData} data={this.state.request_step[0]} request_type={this.state.data[0].request_type} measuring_equipment={this.state.measuring_equipment} />
+              <History id={this.state.data[0].id} getData={this.getData} data={this.state.history} />
+            </Col>
+          </Row>
+          : <Redirect to="/404" />}
       </div>
     );
   }

@@ -7,7 +7,6 @@ import AuthService from 'server/AuthService';
 import { CSVLink } from 'react-csv';
 import AddRequest from 'components/Modals/Requests/AddRequest';
 import ViewRequest from 'components/Modals/Requests/ViewRequest';
-import EditRequest from 'components/Modals/Requests/EditRequest';
 import DeleteRequest from 'components/Modals/Requests/DeleteRequest';
 
 class Calibration extends Component {
@@ -229,6 +228,7 @@ class Calibration extends Component {
   }
 
   handleChangeNewEngineer1 = (event, { newValue }) => {
+    console.log(event.target.name)
     this.setState({
       new: {
         ...this.state.new,
@@ -322,41 +322,6 @@ class Calibration extends Component {
     }
   }
 
-  handleEdit = (event) => {
-    event.preventDefault();
-    if (window.confirm("You will create change(s) on database. Are you sure?")) {
-      this.setState({ loader: true });
-      axios.put(process.env.REACT_APP_API_PATH + '/cal_requests/' + this.state.data[this.state.id].id.replace(new RegExp("/", 'g'), "%2F"), this.state.focus)
-        .then(res => {
-          this.setState({
-            edit: !this.state.edit,
-            loader: false
-          })
-          // INSERT HISTORY INTO DATABASE
-          var request = {
-            reference_id: this.state.data[this.state.id].id,
-            test_engineer_id: this.Auth.getProfile().id,
-            cal_step_id: "REQ2",
-            message: this.state.message
-          }
-          axios.post(process.env.REACT_APP_API_PATH + '/history', request)
-            .then(() => {
-              this.getData();
-            })
-            .catch(error => {
-              alert(error);
-              console.log(error);
-            });
-          ////////////////////////////////////////////////////////////////
-          alert(res.data.message);
-        })
-        .catch(error => {
-          alert(error);
-          console.log(error);
-        });
-    }
-  }
-
   handleDelete = (id) => {
     if (window.confirm("You will create change(s) on database. Are you sure?")) {
       this.setState({ loader: true });
@@ -401,14 +366,6 @@ class Calibration extends Component {
     this.setState({
       id: id,
       view: !this.state.view,
-      focus: this.state.data[id]
-    });
-  }
-
-  toggleEdit = (id) => {
-    this.setState({
-      id: id,
-      edit: !this.state.edit,
       focus: this.state.data[id]
     });
   }
@@ -472,7 +429,6 @@ class Calibration extends Component {
     }
 
     var rows = [];
-    let toggleEdit = this.toggleEdit;
     let toggleDelete = this.toggleDelete;
     data.rows.forEach(function (items, i) {
       if (items.id !== '') {
@@ -485,11 +441,9 @@ class Calibration extends Component {
           status: items.actual_finished === "" ? "On Progress" : "Finished",
           engineer: items.engineer_1,
           actions: <div className="d-flex">
-            {/* <button title="View Data" className="px-3 py-1 mr-1 btn btn-primary" onClick={() => toggleView(i)}><i className="fa fa-folder-open"></i></button> */}
-            <Link to={"/requests/content/" + items.id.replace(new RegExp("/", 'g'), "%2F")} className="px-3 py-1 mr-1 btn btn-primary" ><i className="fa fa-folder-open"></i></Link>
+            <Link to={"/requests/content/cal/" + items.id.replace(new RegExp("/", 'g'), "%2F")} className="px-3 py-1 mr-1 btn btn-primary" ><i className="fa fa-folder-open"></i></Link>
             {role === "2" || lab === "CAL" ?
               <React.Fragment>
-                <button title="Edit Data" className="px-3 py-1 mr-1 btn btn-warning" onClick={() => toggleEdit(i)}><i className="fa fa-pencil"></i></button>
                 <button title="Delete Data" className="px-3 py-1 mr-1 btn btn-danger" onClick={() => toggleDelete(i)}><i className="fa fa-minus-circle"></i></button>
               </React.Fragment> : ""}
           </div>
@@ -538,8 +492,6 @@ class Calibration extends Component {
                 <AddRequest add={this.state.add} data={this.state.new} handleAdd={this.handleAdd} handleChangeNew={this.handleChangeNew} handleChangeNewFile={this.handleChangeNewFile} loader={this.state.loader} toggleAdd={this.toggleAdd} handleChangeNewEngineer1={this.handleChangeNewEngineer1} handleChangeNewEngineer2={this.handleChangeNewEngineer2} handleChangeNewEngineer3={this.handleChangeNewEngineer3} />
 
                 <ViewRequest data={this.state.focus} getData={this.getData} id={this.state.id} toggleView={this.toggleView} view={this.state.view} />
-
-                <EditRequest edit={this.state.edit} data={this.state.focus} id={this.state.id} handleChangeEditEngineer1={this.handleChangeEditEngineer1} handleChangeEditEngineer2={this.handleChangeEditEngineer2} handleChangeEditEngineer3={this.handleChangeEditEngineer3} handleEdit={this.handleEdit} handleChange={this.handleChange} loader={this.state.loader} toggleEdit={this.toggleEdit} />
 
                 <DeleteRequest _delete={this.state.delete} data={this.state.focus} id={this.state.id} handleDelete={this.handleDelete} loader={this.state.loader} toggleDelete={this.toggleDelete} />
 
